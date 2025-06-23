@@ -228,7 +228,7 @@ This project is licensed under the Alfresco 2.0 License - see the [LICENSE](LICE
 
 ## 🔗 Related Projects
 
-- **[python-alfresco-api](https://github.com/your-org/python-alfresco-api)** - The MCP server uses this
+- **[python-alfresco-api](https://github.com/stevereiner/python-alfresco-api)** - The MCP server uses this
 - **[Model Context Protocol Python SDK](https://github.com/modelcontextprotocol/python-sdk)** - Official MCP Python SDK
 - **[Angel's Alfresco MCP PoC](https://github.com/aborroy/alfresco-mcp-poc)** - Java MCP client, TypeScript MCP server for Alfresco
 - **[Box MCP Server](https://github.com/box-community/mcp-server-box)** - Box Python based MCP server
@@ -236,9 +236,8 @@ This project is licensed under the Alfresco 2.0 License - see the [LICENSE](LICE
 ## 🙋‍♂️ Support
 
 - 📚 **Documentation**: TBD
-- 🐛 **Issues**: [GitHub Issues](https://github.com/your-org/python-alfresco-mcp-server/issues)
-- 💬 **Discussions**: [GitHub Discussions](https://github.com/your-org/python-alfresco-mcp-server/discussions)
+- 🐛 **Issues**: [GitHub Issues](https://github.com/stevereiner/python-alfresco-mcp-server/issues)
 
 ---
 
-**Built using [python-alfresco-api](https://github.com/your-org/python-alfresco-api) and the [Model Context Protoco Python SDK](https://github.com/modelcontextprotocol/python-sdk)**
+**Built using [python-alfresco-api](https://github.com/stevereiner/python-alfresco-api) and the [Model Context Protoco Python SDK](https://github.com/modelcontextprotocol/python-sdk)**
