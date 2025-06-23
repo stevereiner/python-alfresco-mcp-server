@@ -1,0 +1,4 @@
+alfresco_url: "http://localhost:8080"
+username: "admin"
+password: "admin"
+verify_ssl: false
