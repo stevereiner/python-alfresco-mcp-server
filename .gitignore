@@ -51,6 +51,15 @@ coverage.xml
 .pytest_cache/
 cover/
 
+# Additional testing framework artifacts
+.pytest_cache/
+pytest.ini.bak
+test-results/
+test-reports/
+.testmondata
+junit.xml
+report.xml
+
 # Translations
 *.mo
 *.pot
@@ -167,6 +176,15 @@ cython_debug/
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 #.idea/
 
+# VS Code
+.vscode/settings.json
+.vscode/launch.json
+.vscode/extensions.json
+.vscode/tasks.json
+.vscode/.ropeproject
+# Keep workspace settings but ignore personal settings
+!.vscode/settings.json.template
+
 # Ruff stuff:
 .ruff_cache/
 
@@ -180,6 +198,43 @@ cython_debug/
 .cursorignore
 .cursorindexingignore
 
+# FastMCP 2.0 and MCP Development
+# MCP client/server communication logs
+*.mcp.log
+mcp_*.log
+fastmcp_*.log
+
+# MCP development artifacts
+.mcp_cache/
+mcp_debug/
+.fastmcp/
+
+# Alfresco MCP Server specific
+alfresco_mcp_server.log*
+alfresco_*.log
+connection_test.py
+debug_*.py
+
+# Development and testing artifacts
+.benchmarks/
+performance_results/
+integration_test_results/
+mock_data/
+test_uploads/
+test_downloads/
+
+# Configuration files with secrets (keep templates)
+config.local.yaml
+config.dev.yaml
+config.prod.yaml
+.env.local
+.env.dev
+.env.prod
+# Keep sample config files
+!sample-*.txt
+!config.sample.*
+!.env.sample
+
 # Experimental/scratch files
 o.txt
 *.tmp
@@ -187,3 +242,5 @@ test_*.py
 *_test.py
 scratch*
 temp*
+debug_output.txt
+output.txt

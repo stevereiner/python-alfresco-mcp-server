@@ -1,0 +1,27 @@
+# Alfresco MCP Server Configuration
+# Copy this file to .env and customize for your environment
+# The .env file will be ignored by git for security
+
+# === REQUIRED: Alfresco Connection ===
+ALFRESCO_URL=http://localhost:8080
+ALFRESCO_USERNAME=admin
+ALFRESCO_PASSWORD=admin
+
+# === OPTIONAL: Connection Settings ===
+ALFRESCO_VERIFY_SSL=false
+ALFRESCO_TIMEOUT=30
+
+# === OPTIONAL: Server Settings ===
+LOG_LEVEL=INFO
+MAX_FILE_SIZE=100000000
+
+# === OPTIONAL: HTTP Transport Settings ===
+FASTAPI_HOST=localhost
+FASTAPI_PORT=8000
+
+# === NOTES ===
+# - Environment variables take precedence over defaults
+# - python-alfresco-api may have its own configuration (check its docs)
+# - For production, use environment variables or secure secret management
+# - Boolean values: true/false (case insensitive)
+# - File size in bytes (100000000 = 100MB) 

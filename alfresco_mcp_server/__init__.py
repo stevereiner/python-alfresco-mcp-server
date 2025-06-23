@@ -1,15 +1,14 @@
 """
-Alfresco MCP Server
+MCP Server for Alfresco
 
 Model Context Protocol server for Alfresco Content Services.
 Provides AI-native access to Alfresco content management operations.
 """
 
-__version__ = "0.1.0"
-__title__ = "Alfresco MCP Server"
+__version__ = "1.0.0"
+__title__ = "MCP Server for Alfresco"
 __description__ = "Model Context Protocol server for Alfresco Content Services"
 
-from .server import AlfrescoMCPServer
 from .config import AlfrescoConfig
 
-__all__ = ["AlfrescoMCPServer", "AlfrescoConfig"] 
+__all__ = ["AlfrescoConfig"] 

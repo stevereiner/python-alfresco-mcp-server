@@ -1,5 +1,5 @@
 """
-Configuration management for Alfresco MCP Server.
+Configuration management for MCP Server for Alfresco.
 """
 
 import os
@@ -8,7 +8,7 @@ from pydantic import BaseModel, Field
 
 
 class AlfrescoConfig(BaseModel):
-    """Configuration for Alfresco MCP Server."""
+    """Configuration for MCP Server for Alfresco."""
     
     # Alfresco server connection
     alfresco_url: str = Field(
@@ -40,12 +40,12 @@ class AlfrescoConfig(BaseModel):
     
     # MCP Server settings
     server_name: str = Field(
-        default="alfresco-mcp-server",
+        default="python-alfresco-mcp-server",
         description="MCP server name"
     )
     
     server_version: str = Field(
-        default="0.1.0",
+        default="1.0.0",
         description="MCP server version"
     )
     

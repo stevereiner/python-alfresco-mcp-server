@@ -3,17 +3,17 @@ requires = ["setuptools>=61.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "alfresco-mcp-server"
-version = "0.1.0"
-description = "Model Context Protocol server for Alfresco Content Services integration"
+name = "python-alfresco-mcp-server"
+version = "1.0.0"
+description = "FastMCP 2.0 server for Alfresco Content Services integration"
 authors = [{name = "Your Name", email = "your.email@example.com"}]
-license = {text = "MIT"}
+license = {text = "Apache-2.0"}
 readme = "README.md"
 requires-python = ">=3.8"
 classifiers = [
-    "Development Status :: 3 - Alpha",
+    "Development Status :: 4 - Beta",
     "Intended Audience :: Developers",
-    "License :: OSI Approved :: MIT License",
+    "License :: OSI Approved :: Apache Software License",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
@@ -22,31 +22,46 @@ classifiers = [
     "Programming Language :: Python :: 3.12",
 ]
 dependencies = [
-    "mcp>=1.0.0",
-    "fastapi>=0.100.0",
-    "uvicorn>=0.23.0",
-    "httpx>=0.24.0",
+    # FastMCP 2.0 - Modern MCP framework with enhanced features
+    "fastmcp>=2.9.0",
+    
+    # Alfresco integration
+    "python-alfresco-api>=1.0.0",
+    
+    # Configuration and utilities
     "pydantic>=2.0.0",
     "pydantic-settings>=2.0.0",
-    "python-alfresco-api>=1.0.0",
     "PyYAML>=6.0",
+    
+    # HTTP client
+    "httpx>=0.24.0",
+    
+    # File handling
     "python-multipart>=0.0.6",
 ]
 
 [project.optional-dependencies]
 dev = [
-    "pytest>=7.0.0",
-    "pytest-asyncio>=0.21.0",
-    "pytest-cov>=4.0.0",
-    "pytest-mock>=3.10.0",
     "black>=23.0.0",
     "ruff>=0.1.0",
     "mypy>=1.0.0",
+]
+test = [
+    "pytest>=7.0.0",
+    "pytest-asyncio>=0.21.0",
+    "pytest-cov>=4.0.0",
+    "pytest-xdist>=3.0.0",
+    "pytest-mock>=3.10.0",
+    "coverage[toml]>=7.0.0",
     "httpx>=0.24.0",
+]
+all = [
+    "python-alfresco-mcp-server[dev]",
+    "python-alfresco-mcp-server[test]",
 ]
 
 [project.scripts]
-alfresco-mcp-server = "alfresco_mcp_server.main:main"
+python-alfresco-mcp-server = "alfresco_mcp_server.fastmcp_server:main"
 
 [tool.pytest.ini_options]
 minversion = "7.0"
@@ -66,6 +81,7 @@ markers = [
     "asyncio: marks tests as async",
     "integration: marks tests as integration tests requiring live Alfresco server",
     "unit: marks tests as unit tests",
+    "fastmcp: marks tests as FastMCP 2.0 specific tests",
 ]
 asyncio_mode = "auto"
 
