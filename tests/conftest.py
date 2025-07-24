@@ -145,7 +145,7 @@ def mock_search_results():
         entry.entry.modifiedAt = "2024-01-15T10:30:00Z"
         entry.entry.createdByUser = {"displayName": "Test User"}
         entry.entry.content = {"sizeInBytes": 1024} if not is_folder else None
-        entry.entry.path = {"name": "/Company Home/Test"}
+        entry.entry.path = {"name": "/Shared/Test"}
         return entry
     
     results = SimpleNamespace()
