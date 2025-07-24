@@ -98,4 +98,7 @@ class AlfrescoConfig(BaseModel):
 
 def load_config() -> AlfrescoConfig:
     """Load configuration from environment variables and defaults."""
-    return AlfrescoConfig() 
+    return AlfrescoConfig()
+
+# Global config instance for import
+config = load_config() 
