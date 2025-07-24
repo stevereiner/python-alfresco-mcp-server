@@ -1,36 +1,24 @@
 # Alfresco MCP Server Examples
 
-This directory contains practical examples demonstrating how to use the Alfresco MCP Server in different scenarios.
+This directory contains practical examples demonstrating how to use the Alfresco MCP Server's **15 tools** across search, core operations, and workflow management in different scenarios.
 
 ## 📋 Available Examples
 
 ### 🚀 Quick Start Examples
 - [`quick_start.py`](quick_start.py) - Basic server setup and first tool call
-- [`basic_client.py`](basic_client.py) - Simple client connection examples
 
 ### 🔧 Transport Examples  
-- [`stdio_example.py`](stdio_example.py) - Standard MCP protocol usage
-- [`http_example.py`](http_example.py) - HTTP transport usage
-- [`sse_example.py`](sse_example.py) - Server-Sent Events transport
+- [`transport_examples.py`](transport_examples.py) - All transport protocols (STDIO, HTTP, SSE)
 
 ### 🛠️ Tool Usage Examples
-- [`search_examples.py`](search_examples.py) - Document search scenarios
 - [`document_lifecycle.py`](document_lifecycle.py) - Complete document management workflow
-- [`folder_management.py`](folder_management.py) - Folder operations
 - [`batch_operations.py`](batch_operations.py) - Bulk document processing
 
-### 📊 Advanced Examples
-- [`error_handling.py`](error_handling.py) - Robust error handling patterns
-- [`performance_examples.py`](performance_examples.py) - Performance optimization techniques
-- [`integration_examples.py`](integration_examples.py) - Integration with other systems
+### 📊 Additional Examples
+- [`error_handling.py`](error_handling.py) - Error handling patterns
 
-### 🔍 Resource and Prompt Examples
-- [`resource_usage.py`](resource_usage.py) - Using MCP resources for repository info
-- [`prompt_examples.py`](prompt_examples.py) - Working with analysis prompts
-
-### ⚙️ Configuration Examples
-- [`config_examples.py`](config_examples.py) - Different configuration setups
-- [`environment_setup.py`](environment_setup.py) - Environment variable configurations
+### 📖 Documentation Summary
+- [`examples_summary.md`](examples_summary.md) - Overview of all examples and documentation
 
 ## 🎯 Getting Started
 
@@ -62,19 +50,26 @@ Each example includes:
 ## 🚀 Running Examples
 
 ```bash
-# Basic client example
-python examples/basic_client.py
+# Quick start example
+python examples/quick_start.py
 
 # Document lifecycle workflow
 python examples/document_lifecycle.py
 
-# Performance testing
-python examples/performance_examples.py
+# Transport protocols demonstration
+python examples/transport_examples.py
+
+# Batch operations and performance
+python examples/batch_operations.py
+
+# Error handling patterns
+python examples/error_handling.py
 ```
 
 ## 💡 Tips
 
 - Start with `quick_start.py` for your first experience
 - Check `error_handling.py` for production-ready patterns
-- Use `performance_examples.py` for optimization insights
-- Refer to `integration_examples.py` for system integration 
+- Use `batch_operations.py` for performance optimization insights
+- Explore `transport_examples.py` for different connection methods
+- Review `examples_summary.md` for documentation overview 
