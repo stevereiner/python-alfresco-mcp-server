@@ -182,6 +182,7 @@ cython_debug/
 .vscode/extensions.json
 .vscode/tasks.json
 .vscode/.ropeproject
+.vscode/mcp.json
 # Keep workspace settings but ignore personal settings
 !.vscode/settings.json.template
 
@@ -197,6 +198,9 @@ cython_debug/
 #  refer to https://docs.cursor.com/context/ignore-files
 .cursorignore
 .cursorindexingignore
+*.cursormemory
+.cursormemory
+memory-bank/
 
 # FastMCP 2.0 and MCP Development
 # MCP client/server communication logs

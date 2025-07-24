@@ -1,0 +1,16 @@
+"servers": {
+  "my-mcp-server": {
+    "type": "http",
+    "command": "python",
+    "args": ["${workspaceFolder}/run_server.py", "--transport", "http", "--port", "8003", "--host", "127.0.0.1"],
+    "dev": {
+      "watch": "${workspaceFolder}/alfresco_mcp_server/**/*.py",
+      "debug": { "type": "python" }
+    },
+    "env": {
+        "ALFRESCO_URL": "http://localhost:8080",
+        "ALFRESCO_USERNAME": "admin",
+        "ALFRESCO_PASSWORD": "admin"
+      }
+  }
+}

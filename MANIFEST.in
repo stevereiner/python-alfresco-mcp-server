@@ -1,0 +1,49 @@
+# Include README and license
+include README.md
+include LICENSE
+include pyproject.toml
+include pytest.ini
+
+# Include configuration files
+include config.yaml
+include sample-dot-env.txt
+include *.json
+
+# Include documentation
+recursive-include docs *.md *.rst *.txt
+
+# Include examples  
+recursive-include examples *.py *.md *.txt *.yaml *.yml *.json
+
+# Include all Python packages and modules
+recursive-include alfresco_mcp_server *.py
+recursive-include alfresco_mcp_server/tools *.py
+recursive-include alfresco_mcp_server/resources *.py
+recursive-include alfresco_mcp_server/prompts *.py  
+recursive-include alfresco_mcp_server/utils *.py
+
+# Include MCP configuration files
+include claude-desktop-config*.json
+include mcp-inspector*.json
+
+# Include runner scripts
+include run_server*.py
+include run_server*.bat
+include run_server*.ps1
+
+# Include scripts directory
+recursive-include scripts *.py *.bat *.ps1
+
+# Exclude development and build artifacts
+prune tests
+prune tests-debug
+prune venv*
+prune .git*
+prune __pycache__
+prune *.egg-info
+prune .vscode
+prune memory-bank
+global-exclude *.pyc
+global-exclude *.pyo
+global-exclude *~
+global-exclude .DS_Store 

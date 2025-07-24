@@ -1,4 +1,12 @@
-alfresco_url: "http://localhost:8080"
-username: "admin"
-password: "admin"
-verify_ssl: false
+# Alfresco MCP Server Configuration
+alfresco:
+  base_url: "http://localhost:8080"  # Base URL only - API paths added by individual clients
+  username: "admin"
+  password: "admin"
+  verify_ssl: false
+  timeout: 30
+
+# MCP Server Configuration  
+server:
+  name: "python-alfresco-mcp-server"
+  version: "1.1.0"
