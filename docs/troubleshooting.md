@@ -1,6 +1,6 @@
 # Troubleshooting Guide
 
-Comprehensive troubleshooting guide for the Alfresco MCP Server. This document covers common issues, diagnostic steps, and solutions to help you resolve problems quickly.
+Troubleshooting guide for the Alfresco MCP Server. This document covers common issues, diagnostic steps, and solutions to help you resolve problems quickly.
 
 ## 🚨 Quick Diagnosis
 
@@ -548,7 +548,7 @@ from fastmcp import Client
 from alfresco_mcp_server.fastmcp_server import mcp
 
 async def health_check():
-    """Perform comprehensive health check."""
+    """Perform health check."""
     
     checks = []
     
@@ -600,7 +600,7 @@ tail -f /opt/alfresco/tomcat/logs/catalina.out | grep -i mcp
 ### Before Asking for Help
 
 1. ✅ Check this troubleshooting guide
-2. ✅ Review the [FAQ](faq.md)
+2. ✅ Check GitHub Issues for similar problems
 3. ✅ Run the health check script above
 4. ✅ Collect relevant log files
 5. ✅ Document your environment details

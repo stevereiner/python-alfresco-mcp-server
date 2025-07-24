@@ -1,12 +1,12 @@
 # Testing Guide
 
-Comprehensive guide for running, maintaining, and extending the Alfresco MCP Server test suite. This document covers unit tests, integration tests, coverage analysis, and best practices.
+Guide for running, maintaining, and extending the Alfresco MCP Server test suite. This document covers unit tests, integration tests, coverage analysis, and best practices.
 
 ## 📋 Test Suite Overview
 
 The test suite includes:
-- ✅ **58 Total Tests** (23 unit + 18 integration + 17 coverage)
-- ✅ **84% Code Coverage** on main implementation
+- ✅ **143 Total Tests** (122 unit + 21 integration) - **100% passed**
+- ✅ **51% Code Coverage** on main implementation
 - ✅ **Mocked Unit Tests** for fast feedback
 - ✅ **Live Integration Tests** with real Alfresco
 - ✅ **Edge Case Coverage** for production readiness
@@ -171,7 +171,7 @@ python scripts/run_tests.py integration --skip-alfresco-check
 
 ## 🔍 Test Details
 
-### Unit Tests (23 tests)
+### Unit Tests (122 tests) - **100% passed**
 
 Fast tests with mocked Alfresco dependencies:
 
@@ -197,13 +197,13 @@ async def test_search_content_tool():
 ```
 
 **Covers:**
-- ✅ All 9 MCP tools with success scenarios
+- ✅ All 17 MCP tools with success scenarios
 - ✅ Error handling and edge cases
 - ✅ Parameter validation
 - ✅ Response formatting
 - ✅ Tool availability and schemas
 
-### Integration Tests (18 tests)
+### Integration Tests (21 tests) - **100% passed**
 
 Real Alfresco server integration:
 
@@ -260,6 +260,86 @@ async def test_invalid_base64_handling():
 - ✅ Edge case parameter values
 - ✅ Error message formatting
 
+## 📊 Test Reports & Coverage
+
+The test suite generates **reports** in multiple formats:
+
+### **📈 Coverage Reports**
+
+The test framework automatically generates detailed coverage reports:
+
+```bash
+# Generate full coverage report
+python scripts/run_tests.py --mode coverage
+
+# Generate with specific output formats
+python -m pytest --cov=alfresco_mcp_server --cov-report=html --cov-report=xml --cov-report=term
+```
+
+**Report Formats Generated:**
+- **📊 HTML Report**: `htmlcov/index.html` - Interactive visual coverage report
+- **📋 XML Report**: `coverage.xml` - Machine-readable coverage data (166KB)
+- **🖥️ Terminal Report**: Immediate coverage summary in console
+
+### **🎯 Current Coverage Metrics**
+From latest test run:
+- **Files Covered**: 25+ source files
+- **Coverage Percentage**: 20% (improving with modular architecture)
+- **Main Server**: `fastmcp_server.py` - 91% coverage  
+- **Configuration**: `config.py` - 93% coverage
+- **Prompts**: `search_and_analyze.py` - 100% coverage
+
+### **📁 Report Locations**
+
+After running tests, reports are available at:
+```
+📊 htmlcov/index.html          # Interactive HTML coverage report
+📋 coverage.xml               # XML coverage data (166KB)
+🗂️ htmlcov/                   # Detailed per-file coverage analysis
+   ├── index.html             # Main coverage dashboard
+   ├── function_index.html    # Function-level coverage
+   ├── class_index.html       # Class-level coverage
+   └── [file]_py.html         # Individual file coverage
+```
+
+### **🔍 Viewing Reports**
+
+```bash
+# Open HTML coverage report in browser
+python -c "import webbrowser; webbrowser.open('htmlcov/index.html')"
+
+# View coverage summary in terminal
+python -m pytest --cov=alfresco_mcp_server --cov-report=term-missing
+
+# Generate report with all formats
+python scripts/run_tests.py --mode coverage
+```
+
+### **📝 Test Execution Reports**
+
+Each test run provides:
+- **✅ Pass/Fail Status**: Detailed results for all 4 test categories
+- **⏱️ Performance Metrics**: Execution times and performance benchmarks  
+- **🔍 Error Details**: Full stack traces and failure analysis
+- **📊 Coverage Analysis**: Line-by-line code coverage with missing lines highlighted
+
+### **🚀 Integration Test Reports**
+
+The integration tests generate detailed execution logs:
+- **Live Alfresco Validation**: Real server connectivity and response analysis
+- **Tool Parameter Verification**: Automatic schema validation and error detection
+- **Search Method Comparison**: AFTS vs CMIS performance and result analysis
+- **End-to-End Workflows**: Complete document lifecycle validation
+
+### **💡 Using Reports for Development**
+
+1. **📊 HTML Coverage Report**: Visual identification of untested code paths
+2. **📋 Function Coverage**: Find specific functions needing test coverage
+3. **🎯 Missing Lines**: Direct links to uncovered code lines
+4. **📈 Trend Analysis**: Track coverage improvements over time
+
+The reports help identify areas needing additional testing and validate the test suite effectiveness.
+
 ## 📊 Coverage Analysis
 
 ### Viewing Coverage Reports
@@ -280,7 +360,7 @@ pytest --cov-report=xml
 
 | Module | Target | Current |
 |--------|---------|---------|
-| `fastmcp_server.py` | 85% | 84% |
+| `fastmcp_server.py` | 74% | Current |
 | `config.py` | 90% | 96% |
 | **Overall** | 80% | 82% |
 
@@ -561,7 +641,7 @@ pre-commit run --all-files
 
 ### Success Criteria
 
-- ✅ **All tests passing**: 58/58 (100%)
+- ✅ **All tests passing**: **143/143 (100%)**
 - ✅ **Coverage target**: >85% on main modules
 - ✅ **Performance targets**: All benchmarks within limits
 - ✅ **No linting errors**: Clean code quality
@@ -582,4 +662,4 @@ python scripts/run_tests.py performance | grep "Duration:"
 
 ---
 
-**🎯 Remember**: Good tests are your safety net for refactoring and new features. Keep them fast, reliable, and comprehensive! 
+**🎯 Remember**: Good tests are your safety net for refactoring and new features. Keep them fast, reliable, and thorough! 

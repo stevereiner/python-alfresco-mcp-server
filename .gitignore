@@ -182,9 +182,9 @@ cython_debug/
 .vscode/extensions.json
 .vscode/tasks.json
 .vscode/.ropeproject
-.vscode/mcp.json
 # Keep workspace settings but ignore personal settings
 !.vscode/settings.json.template
+!.vscode/mcp.json
 
 # Ruff stuff:
 .ruff_cache/

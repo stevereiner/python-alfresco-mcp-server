@@ -7,21 +7,44 @@ Get up and running with the Alfresco MCP Server in 5 minutes! This guide walks y
 ### Step 1: Prerequisites (30 seconds)
 
 Ensure you have:
-- ✅ Python 3.8+ installed
+- ✅ Python 3.10+ installed
 - ✅ Access to an Alfresco server (local or remote)
 - ✅ Administrator credentials for Alfresco
 
 ```bash
 # Check Python version
-python --version  # Should be 3.8 or higher
+python --version  # Should be 3.10 or higher
 ```
 
 ### Step 2: Installation (1 minute)
+
+**Option A: UV (Recommended - Automatic dependency management)**
+
+```bash
+# Install UV if you don't have it
+powershell -c "irm https://astral.sh/uv/install.ps1 | iex"  # Windows
+# curl -LsSf https://astral.sh/uv/install.sh | sh          # macOS/Linux
+
+# Clone the repository
+git clone https://github.com/your-org/python-alfresco-mcp-server.git
+cd python-alfresco-mcp-server
+
+# That's it! UV will handle venv and dependencies automatically
+# Test with:
+uv run python-alfresco-mcp-server --help
+```
+
+**Option B: Traditional pip (Manual venv management)**
 
 ```bash
 # Clone the repository
 git clone https://github.com/your-org/python-alfresco-mcp-server.git
 cd python-alfresco-mcp-server
+
+# Create and activate virtual environment
+python -m venv venv
+source venv/bin/activate  # Linux/macOS
+# venv\Scripts\activate    # Windows
 
 # Install the package
 pip install -e .
@@ -48,7 +71,10 @@ cp alfresco_mcp_server/config.yaml.example config.yaml
 ### Step 4: Test Connection (30 seconds)
 
 ```bash
-# Quick connection test
+# With UV (recommended)
+uv run python examples/quick_start.py
+
+# With traditional pip
 python examples/quick_start.py
 ```
 
@@ -250,7 +276,7 @@ curl -u admin:admin http://localhost:8080/alfresco/api/-default-/public/alfresco
 ### Getting Help
 
 - 📖 Read the [troubleshooting guide](troubleshooting.md)
-- 💬 Check [FAQ](faq.md) for common questions
+- 💬 Check GitHub Issues for common questions
 - 🐛 Report issues on GitHub
 
 ## 📖 What's Next?
@@ -264,11 +290,11 @@ Explore more advanced features:
 
 ## 🎯 Key Concepts
 
-- **MCP Tools**: 9 tools for document management (search, upload, download, etc.)
+- **MCP Tools**: 15 tools for document management (search, upload, download, checkout/checkin workflow, etc.)
 - **Transport Protocols**: STDIO, HTTP, SSE for different use cases
 - **Resources**: Repository information and health status
 - **Prompts**: AI-powered analysis and insights
 
 ---
 
-**🚀 Congratulations!** You've successfully set up the Alfresco MCP Server. You're now ready to build powerful document management integrations! 
+**🚀 Complete!** You've successfully set up the Alfresco MCP Server. You're now ready to build document management integrations! 

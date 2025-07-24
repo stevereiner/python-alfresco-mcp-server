@@ -6,10 +6,42 @@ Complete guide for configuring the Alfresco MCP Server. This document covers all
 
 The Alfresco MCP Server supports multiple configuration methods:
 
-1. **Environment Variables** (Recommended)
-2. **Configuration Files** (YAML)
-3. **Command Line Arguments**
-4. **Runtime Configuration**
+1. **Environment Variables** (Primary - Always takes precedence)
+2. **Default Values** (Fallback when no environment variable is set)
+3. **Command Line Arguments** (Transport and server options only)
+
+### ⚠️ Configuration Precedence Order
+
+**Higher priority settings override lower priority settings:**
+
+1. 🥇 **Environment Variables** (Highest Priority)
+2. 🥈 **Default Values** (Fallback)
+
+**Answer to "Which setting wins?"**
+- ✅ **Environment Variables ALWAYS WIN** over any other setting
+- ✅ If no environment variable is set, default values are used  
+- ✅ YAML configuration files are **not currently implemented** (future enhancement)
+
+### 🔄 Practical Example
+
+```bash
+# If you set an environment variable:
+export ALFRESCO_URL="https://prod.company.com"
+export ALFRESCO_USERNAME="service-account"
+
+# And later try to override in code or config:
+# config.yaml (not implemented yet, but for illustration):
+# alfresco:
+#   url: "http://localhost:8080"  
+#   username: "admin"
+
+# Result: Environment variables WIN!
+# ✅ ALFRESCO_URL = "https://prod.company.com"  (from env var)
+# ✅ ALFRESCO_USERNAME = "service-account"      (from env var)  
+# ✅ ALFRESCO_PASSWORD = "admin"                (default value - no env var set)
+```
+
+**Key Takeaway:** Environment variables are the "final word" in v1.1 configuration.
 
 ## 🌍 Environment Variables
 
@@ -72,11 +104,13 @@ export ALFRESCO_TIMEOUT="60"
 export ALFRESCO_MAX_RETRIES="5"
 ```
 
-## 📄 Configuration Files
+## 📄 Configuration Files (Future Enhancement)
 
-### YAML Configuration
+> ⚠️ **Note**: YAML configuration files are not currently implemented in v1.1. All configuration must be done via environment variables. YAML support is planned for a future release.
 
-Create `config.yaml` in your project root:
+### Planned YAML Configuration
+
+Future versions will support `config.yaml` in your project root:
 
 ```yaml
 # config.yaml
@@ -118,9 +152,9 @@ features:
   enable_tracing: false
 ```
 
-### Environment-Specific Configs
+### Planned Environment-Specific Configs
 
-**config.development.yaml:**
+**Future: config.development.yaml:**
 ```yaml
 alfresco:
   url: "http://localhost:8080"
@@ -156,19 +190,29 @@ features:
   enable_tracing: true
 ```
 
-### Loading Configuration
+### Current Configuration Loading
 
 ```python
-# Load configuration in your application
+# Current v1.1 implementation - Environment variables only
 from alfresco_mcp_server.config import load_config
 
-# Load default config
+# Load configuration (reads environment variables + defaults)
 config = load_config()
 
-# Load environment-specific config
+# Configuration is automatically loaded from environment variables:
+# ALFRESCO_URL, ALFRESCO_USERNAME, ALFRESCO_PASSWORD, etc.
+```
+
+### Planned Future Configuration Loading
+
+```python
+# Future enhancement - YAML + environment variables
+from alfresco_mcp_server.config import load_config
+
+# Load environment-specific config (planned)
 config = load_config("config.production.yaml")
 
-# Load with environment variable override
+# Load with environment variable override (planned)
 config = load_config(env_override=True)
 ```
 
@@ -208,273 +252,60 @@ python -m alfresco_mcp_server.fastmcp_server \
 
 
 
-## 🔐 Authentication Configuration
 
-### Username/Password Authentication
-
-```bash
-# Basic authentication
-export ALFRESCO_USERNAME="admin"
-export ALFRESCO_PASSWORD="admin"
-
-# Domain authentication
-export ALFRESCO_USERNAME="DOMAIN\\username"
-export ALFRESCO_PASSWORD="password"
-```
-
-### Token Authentication
-
-```bash
-# Get authentication token
-TOKEN=$(curl -d "username=admin&password=admin" \
-  -X POST http://localhost:8080/alfresco/api/-default-/public/authentication/versions/1/tickets \
-  | jq -r .entry.id)
-
-# Use token
-export ALFRESCO_TOKEN="$TOKEN"
-```
-
-### Service Account Setup
-
-1. **Create Service Account in Alfresco:**
-   ```bash
-   # Create user via Alfresco admin console
-   # Or via API
-   curl -u admin:admin -X POST \
-     "http://localhost:8080/alfresco/api/-default-/public/alfresco/versions/1/people" \
-     -H "Content-Type: application/json" \
-     -d '{
-       "id": "mcp-service",
-       "firstName": "MCP",
-       "lastName": "Service",
-       "password": "secure-password",
-       "email": "mcp-service@company.com"
-     }'
-   ```
-
-2. **Assign Permissions:**
-   ```bash
-   # Grant necessary permissions in Alfresco Share
-   # Or via API calls
-   ```
-
-3. **Configure Service Account:**
-   ```bash
-   export ALFRESCO_USERNAME="mcp-service"
-   export ALFRESCO_PASSWORD="secure-password"
-   ```
-
-## 🌐 Network Configuration
-
-### Firewall Settings
-
-**Required Ports:**
-- **Alfresco**: 8080 (HTTP) or 443 (HTTPS)
-- **MCP Server**: 8000-8003 (HTTP/SSE transports)
-
-**Firewall Rules:**
-```bash
-# Allow outbound to Alfresco
-sudo ufw allow out 8080
-sudo ufw allow out 443
-
-# Allow inbound for MCP server (if using HTTP/SSE)
-sudo ufw allow 8000:8003/tcp
-```
-
-### Proxy Configuration
-
-**Behind Corporate Proxy:**
-```bash
-# Set proxy environment variables
-export HTTP_PROXY="http://proxy.company.com:8080"
-export HTTPS_PROXY="http://proxy.company.com:8080"
-export NO_PROXY="localhost,127.0.0.1"
-
-# Configure in Python
-import os
-import httpx
-
-proxies = {
-    "http://": os.getenv("HTTP_PROXY"),
-    "https://": os.getenv("HTTPS_PROXY")
-}
-```
-
-**Nginx Reverse Proxy:**
-```nginx
-# /etc/nginx/sites-available/alfresco-mcp
-server {
-    listen 80;
-    server_name mcp.company.com;
-    
-    location / {
-        proxy_pass http://127.0.0.1:8001;
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-    }
-}
-```
-
-### SSL/TLS Configuration
-
-**Custom Certificate:**
-```bash
-# Add certificate to system trust store
-sudo cp company-ca.crt /usr/local/share/ca-certificates/
-sudo update-ca-certificates
-
-# Or specify in configuration
-export ALFRESCO_CA_BUNDLE="/path/to/company-ca.crt"
-```
-
-**Disable SSL Verification (Development):**
-```yaml
-alfresco:
-  url: "https://alfresco-dev.company.com"
-  verify_ssl: false
-```
-
-## 📊 Performance Configuration
-
-### Connection Pooling
-
-```yaml
-alfresco:
-  # Connection pool settings
-  pool_size: 20           # Maximum connections in pool
-  pool_timeout: 30        # Timeout for getting connection
-  pool_recycle: 3600      # Recycle connections after 1 hour
-  
-  # Request settings
-  timeout: 60             # Request timeout
-  max_retries: 5          # Maximum retry attempts
-  retry_delay: 2.0        # Delay between retries
-```
-
-### Concurrency Limits
-
-```yaml
-server:
-  # Maximum concurrent requests
-  max_concurrent: 10
-  
-  # Request queue size
-  queue_size: 100
-  
-  # Worker processes (for production)
-  workers: 4
-```
-
-### Caching Configuration
-
-```yaml
-cache:
-  # Enable response caching
-  enabled: true
-  
-  # Cache backend
-  backend: "memory"       # memory, redis, file
-  
-  # Cache settings
-  default_ttl: 300        # 5 minutes
-  max_size: 1000          # Maximum cached items
-  
-  # Redis settings (if using Redis backend)
-  redis:
-    host: "localhost"
-    port: 6379
-    db: 0
-```
-
-## 📝 Logging Configuration
-
-### Basic Logging
-
-```yaml
-logging:
-  level: "INFO"
-  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
-  
-  # File logging
-  file: "/var/log/alfresco-mcp-server.log"
-  max_size: "10MB"
-  backup_count: 5
-  
-  # Console logging
-  console: true
-```
-
-### Advanced Logging
-
-```yaml
-logging:
-  version: 1
-  disable_existing_loggers: false
-  
-  formatters:
-    standard:
-      format: "%(asctime)s [%(levelname)s] %(name)s: %(message)s"
-    detailed:
-      format: "%(asctime)s [%(levelname)s] %(name)s:%(lineno)d: %(message)s"
-  
-  handlers:
-    console:
-      class: logging.StreamHandler
-      level: INFO
-      formatter: standard
-      stream: ext://sys.stdout
-    
-    file:
-      class: logging.handlers.RotatingFileHandler
-      level: DEBUG
-      formatter: detailed
-      filename: /var/log/alfresco-mcp-server.log
-      maxBytes: 10485760  # 10MB
-      backupCount: 5
-  
-  loggers:
-    alfresco_mcp_server:
-      level: DEBUG
-      handlers: [console, file]
-      propagate: false
-      
-  root:
-    level: INFO
-    handlers: [console]
-```
-
-### Structured Logging
-
-```yaml
-logging:
-  # JSON logging for log aggregation
-  format: "json"
-  
-  # Additional fields
-  extra_fields:
-    service: "alfresco-mcp-server"
-    version: "1.0.0"
-    environment: "production"
-```
 
 ## 🔧 Development Configuration
 
 ### Development Setup
 
+**Option A: UV (Recommended - Automatic dependency management):**
+
 ```bash
+# Clone the repository
+git clone https://github.com/stevereiner/python-alfresco-mcp-server.git
+cd python-alfresco-mcp-server
+
+# UV handles everything automatically - no manual venv needed!
+uv sync --extra dev          # Install with development dependencies
+uv run python-alfresco-mcp-server --help  # Test installation
+
+# Set development environment variables
+export ALFRESCO_URL="http://localhost:8080"
+export ALFRESCO_USERNAME="admin"
+export ALFRESCO_PASSWORD="admin"
+export ALFRESCO_DEBUG="true"
+export ALFRESCO_LOG_LEVEL="DEBUG"
+export ALFRESCO_VERIFY_SSL="false"
+
+# Run with UV (recommended)
+uv run python-alfresco-mcp-server --transport stdio
+```
+
+**Option B: Traditional Python (Manual venv management):**
+
+```bash
+# Clone the repository
+git clone https://github.com/stevereiner/python-alfresco-mcp-server.git
+cd python-alfresco-mcp-server
+
 # Create development environment
 python -m venv venv
-source venv/bin/activate
+source venv/bin/activate       # Linux/macOS
+# venv\Scripts\activate        # Windows
 
 # Install in development mode
 pip install -e .[dev]
 
 # Set development environment
-export ALFRESCO_ENV="development"
+export ALFRESCO_URL="http://localhost:8080"
+export ALFRESCO_USERNAME="admin"
+export ALFRESCO_PASSWORD="admin"
 export ALFRESCO_DEBUG="true"
 export ALFRESCO_LOG_LEVEL="DEBUG"
+export ALFRESCO_VERIFY_SSL="false"
+
+# Run traditionally
+python-alfresco-mcp-server --transport stdio
 ```
 
 ### Testing Configuration
@@ -636,6 +467,4 @@ python validate_config.py --config config.production.yaml
 curl -u admin:admin http://localhost:8080/alfresco/api/-default-/public/alfresco/versions/1/nodes/-root-
 ```
 
----
-
-**🎯 Remember**: Configuration is critical for production deployments. Always validate your configuration before going live! 
+--- 
