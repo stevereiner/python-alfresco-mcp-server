@@ -1,41 +1,64 @@
-# Python Alfresco MCP Server v1.0 🚀
+# Python Alfresco MCP Server v1.1 🚀
 
-**Model Context Protocol server for Alfresco Content Services**
+**Model Context Protocol Server for Alfresco Content Services**
 
-A comprehensive MCP server that provides AI-native access to Alfresco content management through [FastMCP 2.0](https://github.com/paulinephelan/FastMCP), featuring complete documentation, examples, and deployment patterns.
+A full featured MCP server for Alfresco in search and content management areas. It provides the following tools: full text search (content and properties), advanced search, metadata search, CMIS SQL like search, upload, download,
+checkin, checkout, cancel checkout, create folder, folder browse, delete node, and get/set properties. Also has a  tool for getting repository status/config (also a resource). Has one prompt example.
+Built with [FastMCP 2.0](https://github.com/paulinephelan/FastMCP). 
+Features complete documentation, examples, and 
+config for various MCP clients (Claude Desktop, MCP Inspector, references to configuring others).
 
-## 🌟 What's New in v1.0 (First Release)
+## 🌟 What's New in v1.1
 
-### **Complete FastMCP 2.0 Implementation**
-- **Modern Architecture**: Built entirely on FastMCP 2.0 framework
-- **Multiple Transport Options**: STDIO, HTTP, and SSE with real-time streaming
-- **73% Less Code**: Revolutionary FastMCP 2.0 architecture with ~300 vs 1,098 lines
-- **Clean Codebase**: Legacy MCP SDK code removed (main.py, server.py, tools.py, fastapi_transport.py)
-- **Live Testing**: 84 comprehensive tests with 58 passing (including 18 live Alfresco integration tests)
+### **Modular Architecture & Enhanced Testing**
+- **FastMCP**: v1.0 had FastMCP 2.0 implementation that had all tools implementations in the fastmcp_server.py file
+- **Code Modularization in v1.1**: Split monolithic single file into organized modular structure with separate files
+- **Directory Organization**: Organized into `tools/search/`, `tools/core/`, `resources/`, `prompts/`, `utils/` directories
+- **Enhanced Testing**: Complete test suite transformation - 143 tests with 100% pass rate
+- **Client Configuration Files**: Added dedicated Claude Desktop and MCP Inspector configuration files
+- **Live Integration Testing**: 21 Alfresco server validation tests for real-world functionality
+- **Python-Alfresco-API**:  python-alfresco-mcp-server v1.1  requires the v1.1.1 python-alfresco-api package
 
-### **Complete Documentation & Examples**
-- **📚 Complete Documentation**: 6 comprehensive guides covering setup to deployment
-- **💡 Real-World Examples**: 6 practical examples from quick start to advanced patterns  
+## 📚 Complete Documentation
+
+### **Documentation & Examples**
+- **📚 Complete Documentation**: 9 guides covering setup to deployment
+- **💡 Examples**: 6 practical examples from quick start to implementation patterns  
 - **🔧 Configuration Management**: Environment variables, .env files, and command-line configuration
-- **🏗️ Deployment Ready**: Docker, systemd, and authentication patterns
+- **🏗️ Setup instruction for use with MCP client
 
-### **Comprehensive Learning Resources**
+### **Learning Resources**
 - **🚀 [Quick Start Guide](./docs/quick_start_guide.md)**: 5-minute setup and first operations
-- **📖 [Examples Library](./examples/README.md)**: Beginner to advanced implementation patterns
-- **🔍 [API Reference](./docs/api_reference.md)**: Complete tool documentation with examples
-- **⚙️ [Configuration Guide](./docs/configuration_guide.md)**: Development to deployment
-- **🧪 [Testing Guide](./docs/testing_guide.md)**: Quality assurance and test development
-- **🛠️ [Troubleshooting](./docs/troubleshooting.md)**: Problem diagnosis and resolution
+- **🤖 [Claude Desktop Setup](./docs/claude_desktop_setup.md)**: Complete Claude Desktop configuration for users and developers
+- **🔧 [Client Configurations](./docs/client_configurations.md)**: Setup guide for Cursor, Claude Code, and other MCP clients
+- **📖 [Examples Library](./examples/README.md)**: Implementation patterns and examples
+
+### 📖 Guides covering setup, deployment, and usage:
+
+- **[📚 Documentation Hub](./docs/README.md)** - Complete navigation and overview
+- **[🚀 Quick Start Guide](./docs/quick_start_guide.md)** - 5-minute setup and first operations
+- **[🤖 Claude Desktop Setup](./docs/claude_desktop_setup.md)** - Complete Claude Desktop configuration for users and developers
+- **[🔧 Client Configurations](./docs/client_configurations.md)** - Setup guide for Cursor, Claude Code, and other MCP clients
+- **[🔍 MCP Inspector Setup](./docs/mcp_inspector_setup.md)** - Development and testing with MCP Inspector
+- **[🔍 API Reference](./docs/api_reference.md)** - Complete tool and resource documentation
+- **[⚙️ Configuration Guide](./docs/configuration_guide.md)** - Development to deployment
+- **[🧪 Testing Guide](./docs/testing_guide.md)** - Quality assurance and test development
+- **[🛠️ Troubleshooting Guide](./docs/troubleshooting.md)** - Problem diagnosis and resolution
 
 ## 🚀 Features
 
-### Comprehensive Content Management Tools
-- **Search API**: Advanced text search with AFTS query language
+### Content Management Tools
+- **Search APIs**: 
+  - **Full Text Search**: Basic content search with wildcard support
+  - **Advanced Search**: AFTS query language with date filters, sorting, and field targeting
+  - **Metadata Search**: Property-based queries with operators (equals, contains, date ranges)
+  - **CMIS Search**: SQL like queries for complex content discovery
 - **Document Lifecycle**: Upload, download, checkin, checkout, cancel checkout
 - **Version Management**: Create major/minor versions with comments
-- **Folder Operations**: Create and delete folders with metadata
+- **Folder Operations**: Create folders, delete folder nodes
 - **Property Management**: Get and set document/folder properties and names
-- **Node Operations**: Delete documents and folders (trash or permanent)
+- **Node Operations**: Delete nodes (documents and folders) (trash or permanent)
+- **Repository Info**: (Tool and Resource) Returns repository status, version and whether Community or Enterprise, and module configuration
 
 ### Modern Architecture
 - **FastMCP 2.0 Framework**: Modern, high-performance MCP server implementation
@@ -45,48 +68,121 @@ A comprehensive MCP server that provides AI-native access to Alfresco content ma
   - **SSE** (Server-Sent Events) - Real-time streaming updates
 - **Enterprise Security**: OAuth 2.1, SSO, audit logging, and encrypted communications (optional)
 - **Type Safety**: Full Pydantic v2 models and async support
-- **Advanced Testing**: In-memory client testing with 10x faster execution
+- **In-Memory Testing**: Client testing with faster execution
 - **Progress Reporting**: Real-time operation progress and context logging
 - **Configuration**: Environment variables, .env files, and CLI support
 - **Error Handling**: Graceful error handling with detailed messages and recovery patterns
 
 ### AI Integration
-- **MCP Tools**: 9 comprehensive tools for content operations
+- **MCP Tools**: 15 tools for content operations
 - **MCP Resources**: Repository metadata and status information
-- **MCP Prompts**: AI-friendly templates for common workflows
+- **MCP Prompts**: AI-friendly templates for common operations
 
-### Alfresco Integration (Community & Enterprise)
-- **Authentication Compatibility**: Works with basic auth, LDAP, SAML, and Kerberos authentication
-- **Permission Inheritance**: Respects Alfresco's permission model and site-based security
-- **Content Classification**: Integrates with Alfresco Governance Services (Enterprise) for compliance workflows
-- **Multi-Tenant Support**: Compatible with Alfresco's multi-tenant architecture (Enterprise)
-- **Enterprise High Availability**: Supports clustered Alfresco deployments with load balancing
-- **Version Control**: Full integration with Alfresco's version management and workflow engine
+### Alfresco Integration 
+Works with Alfresco Community (tested) and Enterprise editions
 
 ### FastMCP 2.0 Advantages
-- **73% Less Code**: ~300 lines vs 1,098 lines compared to legacy MCP SDK
-- **Revolutionary Testing**: In-memory Client testing instead of FastAPI mocks
+- **Boilerplate Reduction**: FastMCP reduces the amount of boilerplate code needed for implementing a MCP server
+- **Modular Architecture**: Organized 15 tools across logical modules for maintainability 
+- **In-Memory Testing**: Client testing instead of FastAPI mocks
 - **Enhanced Developer Experience**: Context logging, progress reporting, automatic schema generation
-- **Future-Proof Architecture**: Ready for MCP protocol evolution and AI platform integrations
-- **Comprehensive Examples**: Real-world patterns and best practices
+- **Future-Proof Architecture**: Ready for MCP 2.0 protocol evolution and AI platform integrations
+
 
 ## 📋 Requirements
 
-- Python 3.8+
+- Python 3.10+
 - Alfresco Content Services (Community or Enterprise)
-- python-alfresco-api >= 1.0.0
-
-### Enterprise & Advanced Features
-- **SSO Integration**: OAuth 2.1 providers (Azure AD, Okta, Auth0) for seamless authentication
-- **Enhanced Security**: TLS 1.2+ for encrypted communications
-- **Compliance Support**: Audit logging for regulatory requirements
-- **Enterprise Scalability**: Load balancer support for high-availability deployments
+- python-alfresco-api >= 1.1.1
 
 ## 🛠️ Installation
 
-### 1. Install Dependencies
+### Option A: Install from PyPI (Recommended for Users)
+
+The fastest way to get started - install directly from PyPI:
 
 ```bash
+# Option 1: pipx (Recommended) - installs in isolated environment + makes globally available
+pipx install python-alfresco-mcp-server
+
+# Option 2: pip - traditional package manager  
+pip install python-alfresco-mcp-server
+
+# Option 3: UV (fastest) - Rust-based package manager
+uv pip install python-alfresco-mcp-server
+
+# Run immediately 
+python-alfresco-mcp-server --help
+```
+
+**Why pipx?** pipx automatically creates isolated environments for each tool while making commands globally available - eliminates dependency conflicts while providing system-wide access.
+
+**Note**: You still need to configure your MCP client (Claude Desktop, MCP Inspector, etc.) with the appropriate configuration. See the [MCP Client Setup](#mcp-client-setup) section below for client configuration details.
+
+### Option B: Install from Source (Recommended for Development)
+
+For development or access to latest features:
+
+### 1. Install UV (Recommended)
+
+UV is a modern Python package manager written in **Rust** that handles everything automatically. **Much faster than pip** due to its compiled nature and optimized dependency resolution. Choose your installation method:
+
+```bash
+# Method 1: Official installer (recommended)
+# Windows
+powershell -c "irm https://astral.sh/uv/install.ps1 | iex"
+
+# macOS/Linux  
+curl -LsSf https://astral.sh/uv/install.sh | sh
+
+# Method 2: pip (if you prefer)
+pip install uv
+
+# Method 3: Package managers
+# macOS with Homebrew
+brew install uv
+
+# Windows with Chocolatey  
+choco install uv
+
+# Verify installation
+uv --version
+```
+
+### 2. Get the Code
+
+```bash
+# Clone the repository
+git clone https://github.com/stevereiner/python-alfresco-mcp-server.git
+cd python-alfresco-mcp-server
+```
+
+### 3. Install Dependencies (Choose Method)
+
+**Option A: UV (Recommended - Automatic everything + much faster):**
+
+```bash
+# UV handles venv creation and dependency installation automatically
+# Rust-based performance makes this much faster than pip
+uv run python-alfresco-mcp-server --help
+
+# Or install dependencies explicitly:
+uv sync                    # Basic dependencies
+uv sync --extra dev        # With development tools  
+uv sync --extra test       # With testing tools
+uv sync --extra all        # Everything
+```
+
+**Option B: Traditional pip (Manual venv management):**
+
+```bash
+# Create and activate virtual environment  
+python -m venv venv          # Traditional Python creates 'venv'
+source venv/bin/activate     # Linux/macOS
+# venv\Scripts\activate      # Windows
+
+# Note: UV creates '.venv' by default (not 'venv')
+
 # Install MCP server
 pip install -e .
 
@@ -100,7 +196,7 @@ pip install -e .[test]
 pip install -e .[all]
 ```
 
-### 2. Configure Alfresco Connection
+### 4. Configure Alfresco Connection
 
 **Option 1: Environment Variables**
 ```bash
@@ -134,19 +230,52 @@ ALFRESCO_USERNAME=admin
 ALFRESCO_PASSWORD=admin
 ALFRESCO_VERIFY_SSL=false
 ```
-
 > **Note**: The `.env` file is not checked into git for security. Use `sample-dot-env.txt` as a template.
-
-**Why This Approach?**
-- ✅ **Cross-platform**: Works on Windows (PowerShell/CMD), Linux, Mac
-- ✅ **Simple**: Single configuration method (environment variables only)
-- ✅ **Secure**: .env files are git-ignored, sample file is checked in
-- ✅ **No Priority Confusion**: Environment variables are the only source
-- ✅ **python-alfresco-api Compatible**: May use its own config/env (see their docs)
 
 📖 **See [Configuration Guide](./docs/configuration_guide.md) for complete setup options**
 
+## Alfresco Installation 
+
+If you don't have an Alfresco server installed you can get a docker for the 
+Community version from Github
+   ```bash
+   git clone https://github.com/Alfresco/acs-deployment.git
+```
+
+**Start Alfresco with Docker Compose**
+   ```bash
+   cd acs-deployment/docker-compose
+```
+   Note: you will likely need to comment out activemq ports other than 8161
+   in community-compose.yaml
+   ```bash   
+      ports:
+      - "8161:8161" # Web Console
+      #- "5672:5672" # AMQP
+      #- "61616:61616" # OpenWire
+      #- "61613:61613" # STOMP
+
+    docker-compose -f community-compose.yaml up
+```
+
 ## 🚀 Usage
+
+### MCP Server Startup
+
+**With UV (Recommended - Automatic venv and dependency management):**
+
+```bash
+# Run MCP server with STDIO transport (default)
+uv run python-alfresco-mcp-server
+
+# HTTP transport for web services
+uv run python-alfresco-mcp-server --transport http --host 127.0.0.1 --port 8001
+
+# SSE transport for real-time streaming  
+uv run python-alfresco-mcp-server --transport sse --host 127.0.0.1 --port 8003
+```
+
+**Traditional Python (after manual venv setup):**
 
 ```bash
 # Run MCP server with STDIO transport (default)
@@ -162,48 +291,144 @@ python -m alfresco_mcp_server.fastmcp_server --transport http --host 127.0.0.1 -
 python -m alfresco_mcp_server.fastmcp_server --transport sse --host 127.0.0.1 --port 8003
 ```
 
-### MCP Client Example
+### MCP Client Setup
 
-```python
-import asyncio
-from mcp import ClientSession, StdioServerParameters
-from mcp.client.stdio import stdio_client
+#### 🤖 **Claude Desktop** (Recommended)
 
-async def main():
-    server_params = StdioServerParameters(
-        command="python",
-        args=["-m", "alfresco_mcp_server.fastmcp_server"]
-    )
-    
-    async with stdio_client(server_params) as (read, write):
-        async with ClientSession(read, write) as session:
-            await session.initialize()
-            
-            # Search for documents
-            result = await session.call_tool(
-                "search_content", 
-                arguments={"query": "important document", "max_results": 10}
-            )
-            print(result)
+Claude Desktop is the primary tested and recommended MCP client with native support for the Python Alfresco MCP Server.
+
+📖 **Complete Setup Guide**: **[Claude Desktop Setup Guide](./docs/claude_desktop_setup.md)**
+
+**Quick Start:**
+
+**For Users (PyPI Installation):**
+- Install with `pipx install python-alfresco-mcp-server`
+- Use configuration files: `claude-desktop-config-user-windows.json` or `claude-desktop-config-user-macos.json`
+
+**For Developers (Source Installation):**
+- Clone repository and use UV
+- Use configuration files: `claude-desktop-config-developer-windows.json` or `claude-desktop-config-developer-macos.json`
+
+**Using the Tools:**
+- **Chat naturally** about what you want to do with documents
+- Use **"Search and tools"** button in the chat box for tool access
+- **4 individual search tools**: 
+  - `search_content` (full text search)
+  - `advanced_search` (AFTS query language)
+  - `search_by_metadata` (property-based queries)
+  - `cmis_search` (CMIS SQL queries)
+- Click **"+" → "Add from alfresco"** for quick access to resources
+
+**Search and Analyze Prompt:**
+- Provides a form with query field for full-text search
+- Analysis types: **summary**, **detailed**, **trends**, or **compliance**
+- **Generates template text** to copy/paste into chat for editing
+
+**Repository Info Resource (and Tool):**
+- Provides status information in text format for viewing or copying
+
+**Testing & Examples:**
+- See [`prompts-for-claude.md`](./prompts-for-claude.md) for 14 manual test scenarios and examples
+- Automated versions of all scenarios available in integration test suite
+
+#### 🔧 **Other MCP Clients**
+
+For Cursor, Claude Code, and other MCP clients:
+
+📖 **Complete Setup Guide**: **[Client Configuration Guide](./docs/client_configurations.md)**
+
+**Quick Reference:**
+- **Cursor**: VS Code fork with AI and MCP support
+- **Claude Code**: Anthropic's VS Code extension  
+- **Other Clients**: Generic MCP client configuration patterns
+
+#### 🔍 **MCP Inspector** (Development/Testing)
+
+> 📖 **Setup Guide**: Complete MCP Inspector setup and connection instructions in [MCP Inspector Setup Guide](./docs/mcp_inspector_setup.md)
+
+**Working Method (Recommended):**
+
+1. **Start MCP Server with HTTP transport:**
+```bash
+# With UV (recommended)
+uv run python-alfresco-mcp-server --transport http --port 8003
+
+# Or traditional method
+python -m alfresco_mcp_server.fastmcp_server --transport http --port 8003
 ```
 
-💡 **See [Examples Library](./examples/README.md) for comprehensive usage patterns**
+2. **Start MCP Inspector with config:**
+```bash
+npx @modelcontextprotocol/inspector --config mcp-inspector-http-config.json --server python-alfresco-mcp-server
+```
 
-## 🛠️ Available Tools
+3. **Open browser with pre-filled token:**
+   - Use the URL provided in the output (includes authentication token)
+   - Example: `http://localhost:6274/?MCP_PROXY_AUTH_TOKEN=<token>`
 
+This approach avoids proxy connection errors and provides direct authentication.
+
+
+
+💡 **See [Examples Library](./examples/README.md) for usage patterns**
+
+## 🛠️ Available Tools (15 Total)
+
+### 🔍 Search Tools (4)
 | Tool | Description | Parameters |
 |------|-------------|------------|
-| `search_content` | Search documents and folders | `query` (str), `max_results` (int) |
-| `download_document` | Download document content | `node_id` (str) |
+| `search_content` | Search documents and folders | `query` (str), `max_results` (int), `node_type` (str) |
+| `advanced_search` | Advanced search with filters | `query` (str), `content_type` (str), `created_after` (str), etc. |
+| `search_by_metadata` | Search by metadata properties | `property_name` (str), `property_value` (str), `comparison` (str) |
+| `cmis_search` | CMIS SQL queries | `cmis_query` (str), `preset` (str), `max_results` (int) |
+
+### 🛠️ Core Tools (11)
+| Tool | Description | Parameters |
+|------|-------------|------------|
+| `browse_repository` | Browse repository folders | `node_id` (str) |
+| `repository_info` | Get repository information | None |
 | `upload_document` | Upload new document | `filename` (str), `content_base64` (str), `parent_id` (str), `description` (str) |
-| `checkout_document` | Check out for editing | `node_id` (str) |
-| `checkin_document` | Check in after editing | `node_id` (str), `comment` (str), `major_version` (bool) |
+| `download_document` | Download document content | `node_id` (str), `save_to_disk` (bool) |
 | `create_folder` | Create new folder | `folder_name` (str), `parent_id` (str), `description` (str) |
-| `delete_node` | Delete document/folder | `node_id` (str), `permanent` (bool) |
 | `get_node_properties` | Get node metadata | `node_id` (str) |
-| `update_node_properties` | Update node metadata | `node_id` (str), `properties` (dict), `name` (str) |
+| `update_node_properties` | Update node metadata | `node_id` (str), `name` (str), `title` (str), `description` (str), `author` (str) |
+| `delete_node` | Delete document/folder | `node_id` (str), `permanent` (bool) |
+| `checkout_document` | Check out for editing | `node_id` (str), `download_for_editing` (bool) |
+| `checkin_document` | Check in after editing | `node_id` (str), `comment` (str), `major_version` (bool), `file_path` (str) |
+| `cancel_checkout` | Cancel checkout/unlock | `node_id` (str) |
 
 📖 **See [API Reference](./docs/api_reference.md) for detailed tool documentation**
+
+## 📊 Available Resources
+
+### Repository Information
+| Resource | Description | Access Method |
+|----------|-------------|---------------|
+| `repository_info` | Get comprehensive repository information including version, edition, license details, installed modules, and system status | Available as both MCP resource and tool |
+
+The `repository_info` resource provides:
+- **Repository Details**: ID, edition (Community/Enterprise), version information
+- **License Information**: Issued/expires dates, remaining days, license holder, entitlements
+- **System Status**: Read-only mode, audit enabled, quick share, thumbnail generation
+- **Installed Modules**: Up to 10 modules with ID, title, version, and installation state
+
+📖 **See [API Reference](./docs/api_reference.md) for detailed resource documentation**
+
+## 🎯 Available Prompts
+
+### Search and Analyze Prompt
+| Prompt | Description | Parameters |
+|--------|-------------|------------|
+| `search_and_analyze` | Interactive form for guided content search and analysis | `query` (search terms), `analysis_type` (summary/detailed/trends/compliance) |
+
+The Search and Analyze Prompt provides:
+- **Interactive Form**: User-friendly interface with query input field
+- **Analysis Options**: Choose from summary, detailed analysis, trends, or compliance reporting
+- **Template Generation**: Creates copyable template text for chat conversations
+- **Query Assistance**: Helps users structure effective search queries
+- **Multiple Search Types**: Integrates with all 4 search tools (content, advanced, metadata, CMIS)
+
+📖 **See [API Reference](./docs/api_reference.md) for detailed prompt documentation**
 
 ## 🔧 Configuration Options
 
@@ -219,44 +444,47 @@ async def main():
 | `LOG_LEVEL` | `INFO` | Logging level |
 | `MAX_FILE_SIZE` | `100000000` | Max upload size (bytes) |
 
-⚙️ **See [Configuration Guide](./docs/configuration_guide.md) for advanced and enterprise deployment options**
+⚙️ **See [Configuration Guide](./docs/configuration_guide.md) for deployment options**
 
 ## 🏗️ Architecture
 
 ```
-┌─────────────────────────────────────┐
-│           MCP Client                │
-│    (Claude, Custom App, etc.)       │
-└─────────────┬───────────────────────┘
-              │ stdio/HTTP/SSE
-┌─────────────▼───────────────────────┐
-│       FastMCP 2.0 MCP Server       │
-│  ┌─────────────┬─────────────────┐  │
-│  │ MCP Tools   │ MCP Resources   │  │
-│  │ MCP Prompts │ HTTP/SSE API    │  │
-│  └─────────────┴─────────────────┘  │
-└─────────────┬───────────────────────┘
-              │ python-alfresco-api
-┌─────────────▼───────────────────────┐
-│      Alfresco Content Services      │
-│   (Community/Enterprise Edition)    │
-└─────────────────────────────────────┘
+┌─────────────────────────────────────────────────────┐
+│                   MCP Clients                       │
+│  Claude Desktop │ MCP Inspector │ Cursor │ Claude   │
+│     Code │ n8n │ LangFlow │ Custom MCP Client App   │
+└─────────────────┬───────────────────────────────────┘
+                  │ stdio/HTTP/SSE
+┌─────────────────▼───────────────────────────────────┐
+│             FastMCP 2.0 MCP Server                  │
+│  ┌─────────────┬─────────────┬─────────────────┐    │
+│  │ MCP Tools   │ MCP         │ HTTP/SSE API    │    │
+│  │ (15 total)  │ Resources   │                 │    │
+│  │             │ MCP Prompts │                 │    │
+│  └─────────────┴─────────────┴─────────────────┘    │
+└─────────────────┬───────────────────────────────────┘
+                  │ python-alfresco-api
+┌─────────────────▼───────────────────────────────────┐
+│            Alfresco Content Services                │
+│         (Community/Enterprise Edition)              │
+└─────────────────────────────────────────────────────┘
 ```
 
 ## 🧪 Testing & Quality
 
 ### Test Suite Overview
-- **84 Total Tests**: Comprehensive coverage of all functionality
-- **58 Passing Tests**: Including 18 live integration tests with Alfresco server
-- **40 Unit Tests**: Core functionality validated with mocking (FastMCP 2.0, tools, coverage)
-- **18 Integration Tests**: Live server testing (search, upload, download, workflows)
+- **143 Total Tests**: **100% passed** - Coverage of all functionality
+- **122 Unit Tests**: **100% passed** - Core functionality validated with mocking (FastMCP 2.0, tools, coverage)
+- **21 Integration Tests**: **100% passed** - Live server testing (search, upload, download, document lifecycle)
+- **Integration Tests**: Automated end-to-end testing covering all 14 manual scenarios from prompts-for-claude.md
 - **Performance Validated**: Search <1s, concurrent operations, resource access
 
 ### Coverage Report (Post-Cleanup)
-- **FastMCP 2.0 Core**: 84% coverage (392/414 lines) - Well tested
-- **Configuration Module**: 93% coverage (24/25 lines) - Fully tested  
+- **Overall Coverage**: 51% (1,829 statements tested)
+- **FastMCP 2.0 Core**: Well tested with comprehensive unit coverage
+- **Configuration Module**: 93% coverage - Fully tested
 - **Package Initialization**: 100% coverage (5/5 lines) - Complete
-- **Overall Project**: 85% coverage focused on clean FastMCP 2.0 implementation
+- **Overall Project**: 51% coverage of comprehensive codebase
 
 ### Run Tests
 
@@ -274,6 +502,18 @@ pytest -m "integration"    # Integration tests (requires Alfresco)
 ```
 
 🧪 **See [Testing Guide](./docs/testing_guide.md) for detailed testing strategies**
+
+### 🧪 Test Categories and Execution
+
+The project includes **4 levels of testing**:
+
+1. **📋 Unit Tests** (122 tests) - Fast, mocked, isolated component testing
+2. **🔗 Integration Tests** (21 tests) - Live Alfresco server testing  
+3. **📝 Comprehensive Tests** - Automated prompts-for-claude.md scenarios
+4. **📊 Coverage Tests** - Edge cases and error path coverage
+
+**New Integration Tests:**
+- **Automated Manual Scenarios**: All manual test scenarios from `prompts-for-claude.md` now available as automated tests
 
 ## 🧪 Development
 
@@ -294,48 +534,24 @@ pip install -e .[dev]
 pip install -e ../python-alfresco-api
 ```
 
-### Code Quality
+## 💡 Examples
 
-```bash
-# Format code
-black alfresco_mcp_server/
-
-# Type checking
-mypy alfresco_mcp_server/
-
-# Linting
-ruff check alfresco_mcp_server/
-```
-
-## 📚 Documentation & Examples
-
-### 📖 Documentation
-Comprehensive guides covering every aspect of deployment and usage:
-
-- **[📚 Documentation Hub](./docs/README.md)** - Complete navigation and overview
-- **[🚀 Quick Start Guide](./docs/quick_start_guide.md)** - 5-minute setup and first operations
-- **[🔍 API Reference](./docs/api_reference.md)** - Complete tool and resource documentation
-- **[⚙️ Configuration Guide](./docs/configuration_guide.md)** - Development to deployment
-- **[🧪 Testing Guide](./docs/testing_guide.md)** - Quality assurance and test development
-- **[🛠️ Troubleshooting Guide](./docs/troubleshooting.md)** - Problem diagnosis and resolution
-
-### 💡 Examples
-Real-world implementation patterns from beginner to enterprise:
+### Real-world implementation patterns from beginner to enterprise:
 
 - **[💡 Examples Library](./examples/README.md)** - Complete navigation and learning paths
 - **[🏃 Quick Start](./examples/quick_start.py)** - 5-minute introduction and basic operations
-- **[📋 Document Lifecycle](./examples/document_lifecycle.py)** - Complete workflow demonstration
+- **[📋 Document Lifecycle](./examples/document_lifecycle.py)** - Complete process demonstration
 - **[🚀 Transport Examples](./examples/transport_examples.py)** - STDIO, HTTP, and SSE protocols
 - **[⚡ Batch Operations](./examples/batch_operations.py)** - High-performance bulk processing
 - **[🛡️ Error Handling](./examples/error_handling.py)** - Resilience patterns
-- **[📊 Examples Summary](./examples/examples_summary.md)** - Comprehensive overview and statistics
+- **[📊 Examples Summary](./examples/examples_summary.md)** - Overview and statistics
 
 ## 🤝 Contributing
 
 1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
+2. Create a feature branch (`git checkout -b feature/new-feature`)
+3. Commit your changes (`git commit -m 'Add new feature'`)
+4. Push to the branch (`git push origin feature/new-feature`)
 5. Open a Pull Request
 
 ## 📄 License
@@ -348,12 +564,14 @@ This project is licensed under the Apache 2.0 License - see the [LICENSE](LICENS
 - **[python-alfresco-api](https://github.com/stevereiner/python-alfresco-api)** - The underlying Alfresco API library
 - **[FastMCP 2.0](https://github.com/paulinephelan/FastMCP)** - Modern framework for building MCP servers
 - **[Model Context Protocol](https://modelcontextprotocol.io)** - Official MCP specification and documentation
+- **[MCP Server Directory](https://playbooks.com/mcp)** - Comprehensive directory of 5,000+ MCP servers for AI agents
 
 ## 🙋‍♂️ Support
 
 - 📚 **Documentation**: Complete guides in [`./docs/`](./docs/README.md)
 - 💡 **Examples**: Implementation patterns in [`./examples/`](./examples/README.md)
 - 🧪 **Testing**: Quality assurance in [`./docs/testing_guide.md`](./docs/testing_guide.md)
+- 🔍 **MCP Inspector**: Development testing in [`./docs/mcp_inspector_setup.md`](./docs/mcp_inspector_setup.md)
 - 🛠️ **Troubleshooting**: Problem solving in [`./docs/troubleshooting.md`](./docs/troubleshooting.md)
 - 🐛 **Issues**: [GitHub Issues](https://github.com/stevereiner/python-alfresco-mcp-server/issues)
 
