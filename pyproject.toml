@@ -192,3 +192,9 @@ warn_redundant_casts = true
 warn_unused_ignores = true
 warn_return_any = true
 strict_equality = true
+
+[dependency-groups]
+dev = [
+    "build>=1.2.2.post1",
+    "twine>=6.1.0",
+]

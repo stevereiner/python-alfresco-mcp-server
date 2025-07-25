@@ -1,8 +1,11 @@
 # Include README and license
 include README.md
 include LICENSE
+include CHANGELOG.md
+include prompts-for-claude.md
 include pyproject.toml
 include pytest.ini
+include uv.lock
 
 # Include configuration files
 include config.yaml
