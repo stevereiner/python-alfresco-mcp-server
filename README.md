@@ -1,10 +1,15 @@
 # Python Alfresco MCP Server v1.1 🚀
 
+[![PyPI version](https://img.shields.io/pypi/v/python-alfresco-mcp-server)](https://pypi.org/project/python-alfresco-mcp-server/)
+[![PyPI downloads](https://pepy.tech/badge/python-alfresco-mcp-server/month)](https://pepy.tech/project/python-alfresco-mcp-server)
+[![Python Version](https://img.shields.io/badge/python-3.10%2B-blue)](https://pypi.org/project/python-alfresco-mcp-server/)
+[![License](https://img.shields.io/github/license/stevereiner/python-alfresco-mcp-server)](https://github.com/stevereiner/python-alfresco-mcp-server/blob/main/LICENSE)
+
 **Model Context Protocol Server for Alfresco Content Services**
 
 A full featured MCP server for Alfresco in search and content management areas. It provides the following tools: full text search (content and properties), advanced search, metadata search, CMIS SQL like search, upload, download,
 checkin, checkout, cancel checkout, create folder, folder browse, delete node, and get/set properties. Also has a  tool for getting repository status/config (also a resource). Has one prompt example.
-Built with [FastMCP 2.0](https://github.com/paulinephelan/FastMCP). 
+Built with [FastMCP 2.0](https://github.com/jlowin/FastMCP). 
 Features complete documentation, examples, and 
 config for various MCP clients (Claude Desktop, MCP Inspector, references to configuring others).
 
@@ -73,20 +78,8 @@ config for various MCP clients (Claude Desktop, MCP Inspector, references to con
 - **Configuration**: Environment variables, .env files, and CLI support
 - **Error Handling**: Graceful error handling with detailed messages and recovery patterns
 
-### AI Integration
-- **MCP Tools**: 15 tools for content operations
-- **MCP Resources**: Repository metadata and status information
-- **MCP Prompts**: AI-friendly templates for common operations
-
 ### Alfresco Integration 
 Works with Alfresco Community (tested) and Enterprise editions
-
-### FastMCP 2.0 Advantages
-- **Boilerplate Reduction**: FastMCP reduces the amount of boilerplate code needed for implementing a MCP server
-- **Modular Architecture**: Organized 15 tools across logical modules for maintainability 
-- **In-Memory Testing**: Client testing instead of FastAPI mocks
-- **Enhanced Developer Experience**: Context logging, progress reporting, automatic schema generation
-- **Future-Proof Architecture**: Ready for MCP 2.0 protocol evolution and AI platform integrations
 
 
 ## 📋 Requirements
@@ -238,24 +231,32 @@ ALFRESCO_VERIFY_SSL=false
 
 If you don't have an Alfresco server installed you can get a docker for the 
 Community version from Github
-   ```bash
-   git clone https://github.com/Alfresco/acs-deployment.git
+
+```bash
+git clone https://github.com/Alfresco/acs-deployment.git
 ```
+
+**Move to Docker Compose directory**
+
+```bash
+cd acs-deployment/docker-compose
+```
+
+**Edit community-compose.yaml**
+- Note: you will likely need to comment out activemq ports other than 8161
+
+```bash   
+   ports:
+   - "8161:8161" # Web Console
+   #- "5672:5672" # AMQP
+   #- "61616:61616" # OpenWire
+   #- "61613:61613" # STOMP
+```      
 
 **Start Alfresco with Docker Compose**
-   ```bash
-   cd acs-deployment/docker-compose
-```
-   Note: you will likely need to comment out activemq ports other than 8161
-   in community-compose.yaml
-   ```bash   
-      ports:
-      - "8161:8161" # Web Console
-      #- "5672:5672" # AMQP
-      #- "61616:61616" # OpenWire
-      #- "61613:61613" # STOMP
 
-    docker-compose -f community-compose.yaml up
+```bash
+docker-compose -f community-compose.yaml up
 ```
 
 ## 🚀 Usage
@@ -291,33 +292,62 @@ python -m alfresco_mcp_server.fastmcp_server --transport http --host 127.0.0.1 -
 python -m alfresco_mcp_server.fastmcp_server --transport sse --host 127.0.0.1 --port 8003
 ```
 
-### MCP Client Setup
+### MCP Client Setup and Use
 
-#### 🤖 **Claude Desktop** (Recommended)
+Python-Alfresco-MCP-Server was tested with Claude Desktop which is recommended as an end user MCP client. Python-Alfresco-MCP-Server was also tested with MCP Inspector which is recommended for developers to test tools with argument values.
 
-Claude Desktop is the primary tested and recommended MCP client with native support for the Python Alfresco MCP Server.
+#### 🤖 **Claude Desktop** for Windows (tested) and MacOS (not tested)
 
 📖 **Complete Setup Guide**: **[Claude Desktop Setup Guide](./docs/claude_desktop_setup.md)**
 
-**Quick Start:**
-
-**For Users (PyPI Installation):**
+**For Users (PyPI pipx installation):**
 - Install with `pipx install python-alfresco-mcp-server`
 - Use configuration files: `claude-desktop-config-user-windows.json` or `claude-desktop-config-user-macos.json`
 
-**For Developers (Source Installation):**
-- Clone repository and use UV
+**For Developers (using uv and source installation):**
+- Clone repository and use uv
 - Use configuration files: `claude-desktop-config-developer-windows.json` or `claude-desktop-config-developer-macos.json`
 
 **Using the Tools:**
-- **Chat naturally** about what you want to do with documents
-- Use **"Search and tools"** button in the chat box for tool access
-- **4 individual search tools**: 
-  - `search_content` (full text search)
-  - `advanced_search` (AFTS query language)
-  - `search_by_metadata` (property-based queries)
-  - `cmis_search` (CMIS SQL queries)
-- Click **"+" → "Add from alfresco"** for quick access to resources
+
+- **Chat naturally** about what you want to do with documents and search
+- **Mention "Alfresco"** to ensure the MCP server is used (e.g., "In Alfresco...")
+- **Use tool-related keywords** - mention something close to the tool name 
+- **Follow-up prompts** will know the document from previous context
+
+**Example 1: Document Management**
+
+1. Upload a simple text document: "Please create a file called 'claude_test_doc-25 07 25 101 0 AM.txt' in the repository shared folder with this content: 'This is a test document created by Claude via MCP.' description 'Test document uploaded via Claude MCP'"
+2. Update properties: "Set the description property of this document to 'my desc'"
+3. Check out the document
+4. Cancel checkout
+5. Check out again  
+6. Check in as a major version
+7. Download the document
+8. Upload a second document from "C:\1 sample files\cmispress.pdf"
+
+> **Note**: Claude will figure out to use base64 encoding for the first upload on a second try
+
+**Example 2: Search Operations**
+
+"With Alfresco please test all 3 search methods and CMIS query:"
+- Basic search for "txt" documents, return max 10
+- Advanced search for documents created after 2024-01-01, return max 25
+- Metadata search for documents where cm:title contains "test", limit to 50  
+- CMIS search to find all txt documents, limit to 50
+
+**More Examples: Create Folder, Browse Folders, Get Repository Info**
+
+- "Create a folder called '25 07 25 01 18 am' in shared folder"
+- "List docs and folders in shared folder" *(will use -shared-)*
+- "Can you show me what's in my Alfresco home directory?" *(will use browse_repository -my-)*
+- "Get info on Alfresco" *(will use repository_info tool)*
+
+**Chat Box Buttons**
+
+- Use **Search and tools button** (two horizontal lines with circles icon) in the chat box and choose "python-alfresco-mcp-server" - this allows you to enable/disable all tools or individual tools
+
+- Click the **+ Button** → "Add from alfresco" for quick access to resources and prompts
 
 **Search and Analyze Prompt:**
 - Provides a form with query field for full-text search
@@ -327,20 +357,9 @@ Claude Desktop is the primary tested and recommended MCP client with native supp
 **Repository Info Resource (and Tool):**
 - Provides status information in text format for viewing or copying
 
-**Testing & Examples:**
-- See [`prompts-for-claude.md`](./prompts-for-claude.md) for 14 manual test scenarios and examples
-- Automated versions of all scenarios available in integration test suite
+**Examples:**
+- See [`prompts-for-claude.md`](./prompts-for-claude.md) for examples testing the tools
 
-#### 🔧 **Other MCP Clients**
-
-For Cursor, Claude Code, and other MCP clients:
-
-📖 **Complete Setup Guide**: **[Client Configuration Guide](./docs/client_configurations.md)**
-
-**Quick Reference:**
-- **Cursor**: VS Code fork with AI and MCP support
-- **Claude Code**: Anthropic's VS Code extension  
-- **Other Clients**: Generic MCP client configuration patterns
 
 #### 🔍 **MCP Inspector** (Development/Testing)
 
@@ -369,8 +388,12 @@ npx @modelcontextprotocol/inspector --config mcp-inspector-http-config.json --se
 This approach avoids proxy connection errors and provides direct authentication.
 
 
+#### 🔧 **Other MCP Clients**
 
-💡 **See [Examples Library](./examples/README.md) for usage patterns**
+For Cursor, Claude Code, and other MCP clients:
+
+📖 **Complete Setup Guide**: **[Client Configuration Guide](./docs/client_configurations.md)**
+
 
 ## 🛠️ Available Tools (15 Total)
 
@@ -562,9 +585,13 @@ This project is licensed under the Apache 2.0 License - see the [LICENSE](LICENS
 
 - **[Hyland Alfresco](https://www.hyland.com/en/solutions/products/alfresco-platform)** - Content management platform (Enterprise and Community editions)
 - **[python-alfresco-api](https://github.com/stevereiner/python-alfresco-api)** - The underlying Alfresco API library
-- **[FastMCP 2.0](https://github.com/paulinephelan/FastMCP)** - Modern framework for building MCP servers
+- **[FastMCP 2.0](https://github.com/jlowin/FastMCP)** - Modern framework for building MCP servers
+- **[FastMCP Documentation](https://gofastmcp.com/)** - Complete FastMCP framework documentation and guides
 - **[Model Context Protocol](https://modelcontextprotocol.io)** - Official MCP specification and documentation
-- **[MCP Server Directory](https://playbooks.com/mcp)** - Comprehensive directory of 5,000+ MCP servers for AI agents
+- **[Playbooks.com MCP List](https://playbooks.com/mcp/stevereiner-alfresco-content-services)** - Python Alfresco MCP Server listing
+- **[PulseMCP.com MCP List](https://www.pulsemcp.com/servers/stevereiner-alfresco-content-services)** - Python Alfresco MCP Server listing
+- **[Glama.ai MCP List](https://glama.ai/mcp/servers?query=alfresco)** - Glama Alfresco list including Python Alfresco MCP Server listing
+- **[MCPMarket.com MCP List](https://mcpmarket.com/server/alfresco)** - Python Alfresco MCP Server listing
 
 ## 🙋‍♂️ Support
 
