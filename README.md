@@ -52,31 +52,29 @@ config for various MCP clients (Claude Desktop, MCP Inspector, references to con
 
 ## 🚀 Features
 
-### Content Management Tools
-- **Search APIs**: 
-  - **Full Text Search**: Basic content search with wildcard support
+### Content Management and Search Tools
+- **Search Tools**: 
+  - **Full Text Search**: Basic content search with wildcard support (search_content)
   - **Advanced Search**: AFTS query language with date filters, sorting, and field targeting
   - **Metadata Search**: Property-based queries with operators (equals, contains, date ranges)
   - **CMIS Search**: SQL like queries for complex content discovery
-- **Document Lifecycle**: Upload, download, checkin, checkout, cancel checkout
+- **Document Lifecycle**: Upload, download, check-in, checkout, cancel checkout
 - **Version Management**: Create major/minor versions with comments
 - **Folder Operations**: Create folders, delete folder nodes
 - **Property Management**: Get and set document/folder properties and names
 - **Node Operations**: Delete nodes (documents and folders) (trash or permanent)
 - **Repository Info**: (Tool and Resource) Returns repository status, version and whether Community or Enterprise, and module configuration
 
-### Modern Architecture
+### MCP Architecture
 - **FastMCP 2.0 Framework**: Modern, high-performance MCP server implementation
 - **Multiple Transports**: 
   - **STDIO** (direct MCP protocol) - Default and fastest
   - **HTTP** (RESTful API) - Web services and testing
   - **SSE** (Server-Sent Events) - Real-time streaming updates
-- **Enterprise Security**: OAuth 2.1, SSO, audit logging, and encrypted communications (optional)
-- **Type Safety**: Full Pydantic v2 models and async support
+- **Enterprise Security**: OAuth 2.1  (optional)
+- **Type Safety**: Full Pydantic v2 models
 - **In-Memory Testing**: Client testing with faster execution
-- **Progress Reporting**: Real-time operation progress and context logging
-- **Configuration**: Environment variables, .env files, and CLI support
-- **Error Handling**: Graceful error handling with detailed messages and recovery patterns
+- **Configuration**: Environment variables, .env files
 
 ### Alfresco Integration 
 Works with Alfresco Community (tested) and Enterprise editions
@@ -90,27 +88,40 @@ Works with Alfresco Community (tested) and Enterprise editions
 
 ## 🛠️ Installation
 
+### Install Python
+
+You need to have Python 3.10+ installed for the sections below. If not, download the latest 3.13.x version from:
+
+[Python.org Downloads](https://www.python.org/downloads/)
+
+
 ### Option A: Install from PyPI (Recommended for Users)
 
 The fastest way to get started - install directly from PyPI:
 
 ```bash
+# First install pipx if you don't have it (one-time setup)
+pip install pipx
+
 # Option 1: pipx (Recommended) - installs in isolated environment + makes globally available
 pipx install python-alfresco-mcp-server
 
-# Option 2: pip - traditional package manager  
+# Option 2: pip - traditional package manager (with venv recommended)
+python -m venv venv
+source venv/bin/activate     # Linux/macOS
+# venv\Scripts\activate      # Windows
 pip install python-alfresco-mcp-server
 
-# Option 3: UV (fastest) - Rust-based package manager
+# Option 3: UV (fastest) - Rust-based package manager (see next section for installing uv)
 uv pip install python-alfresco-mcp-server
 
-# Run immediately 
+# Run immediately to test if can get help
 python-alfresco-mcp-server --help
 ```
 
 **Why pipx?** pipx automatically creates isolated environments for each tool while making commands globally available - eliminates dependency conflicts while providing system-wide access.
 
-**Note**: You still need to configure your MCP client (Claude Desktop, MCP Inspector, etc.) with the appropriate configuration. See the [MCP Client Setup](#mcp-client-setup) section below for client configuration details.
+**Note**: You still need to configure your MCP client (Claude Desktop, MCP Inspector, etc.) with the appropriate configuration. See the [MCP Client Setup and Use](#mcp-client-setup-and-use) section below for client configuration details.
 
 ### Option B: Install from Source (Recommended for Development)
 
@@ -131,16 +142,13 @@ curl -LsSf https://astral.sh/uv/install.sh | sh
 # Method 2: pip (if you prefer)
 pip install uv
 
-# Method 3: Package managers
-# macOS with Homebrew
-brew install uv
-
-# Windows with Chocolatey  
-choco install uv
-
 # Verify installation
 uv --version
 ```
+
+**UV Reference Links:**
+- **[UV Installation Guide](https://docs.astral.sh/uv/getting-started/installation/)** - Official installation instructions and platform-specific options
+- **[UV Documentation](https://docs.astral.sh/uv/)** - Complete UV documentation, guides, and advanced usage
 
 ### 2. Get the Code
 
@@ -215,7 +223,11 @@ set ALFRESCO_VERIFY_SSL=false
 **Option 2: .env file** (recommended - cross-platform):
 ```bash
 # Copy sample-dot-env.txt to .env and customize
+# Linux/macOS
 cp sample-dot-env.txt .env
+
+# Windows
+copy sample-dot-env.txt .env
 
 # Edit .env file with your settings
 ALFRESCO_URL=http://localhost:8080
@@ -269,27 +281,41 @@ docker-compose -f community-compose.yaml up
 # Run MCP server with STDIO transport (default)
 uv run python-alfresco-mcp-server
 
-# HTTP transport for web services
-uv run python-alfresco-mcp-server --transport http --host 127.0.0.1 --port 8001
+# HTTP transport for web services (matches MCP Inspector)
+uv run python-alfresco-mcp-server --transport http --host 127.0.0.1 --port 8003
 
 # SSE transport for real-time streaming  
-uv run python-alfresco-mcp-server --transport sse --host 127.0.0.1 --port 8003
+uv run python-alfresco-mcp-server --transport sse --host 127.0.0.1 --port 8001
 ```
 
-**Traditional Python (after manual venv setup):**
+**With pipx (Global installation - no venv needed):**
 
 ```bash
 # Run MCP server with STDIO transport (default)
 python-alfresco-mcp-server
 
-# Or directly with module (also STDIO by default)
-python -m alfresco_mcp_server.fastmcp_server
-
-# HTTP transport for web services
-python -m alfresco_mcp_server.fastmcp_server --transport http --host 127.0.0.1 --port 8001
+# HTTP transport for web services (matches MCP Inspector)
+python-alfresco-mcp-server --transport http --host 127.0.0.1 --port 8003
 
 # SSE transport for real-time streaming  
-python -m alfresco_mcp_server.fastmcp_server --transport sse --host 127.0.0.1 --port 8003
+python-alfresco-mcp-server --transport sse --host 127.0.0.1 --port 8001
+```
+
+**With pip (Activate venv first if installed in one):**
+
+```bash
+# Activate virtual environment first (if used during installation)
+source venv/bin/activate     # Linux/macOS
+# venv\Scripts\activate      # Windows
+
+# Run MCP server with STDIO transport (default)
+python-alfresco-mcp-server
+
+# HTTP transport for web services (matches MCP Inspector)
+python-alfresco-mcp-server --transport http --host 127.0.0.1 --port 8003
+
+# SSE transport for real-time streaming  
+python-alfresco-mcp-server --transport sse --host 127.0.0.1 --port 8001
 ```
 
 ### MCP Client Setup and Use
@@ -300,6 +326,13 @@ Python-Alfresco-MCP-Server was tested with Claude Desktop which is recommended a
 
 📖 **Complete Setup Guide**: **[Claude Desktop Setup Guide](./docs/claude_desktop_setup.md)**
 
+**📥 Download Claude Desktop (Free and Pro versions):**
+- **[Download Claude Desktop](https://claude.ai/download)** - Official Anthropic download page
+- Available for **Windows** and **macOS** only (no Linux version)
+- **Free tier** includes full MCP support and Claude Sonnet 4 access with limits, older Claude models
+(Claude Opus 4 only in Pro)
+
+
 **For Users (PyPI pipx installation):**
 - Install with `pipx install python-alfresco-mcp-server`
 - Use configuration files: `claude-desktop-config-user-windows.json` or `claude-desktop-config-user-macos.json`
@@ -307,6 +340,63 @@ Python-Alfresco-MCP-Server was tested with Claude Desktop which is recommended a
 **For Developers (using uv and source installation):**
 - Clone repository and use uv
 - Use configuration files: `claude-desktop-config-developer-windows.json` or `claude-desktop-config-developer-macos.json`
+
+**🔧 Claude Desktop Path Configuration by Installation Method:**
+
+The Claude Desktop configuration differs based on how you installed the MCP server:
+
+**1. UV (both PyPI and source installations):**
+
+*Option A: UV with project directory (source install or after `uv pip install`):*
+```json
+{
+  "command": "uv",
+  "args": ["run", "python-alfresco-mcp-server", "--transport", "stdio"],
+  "cwd": "C:\\path\\to\\python-alfresco-mcp-server"
+}
+```
+- Uses `uv run` with `cwd` pointing to your **project directory**
+- UV automatically finds and uses the `.venv` from the project directory
+- Works for both source installations and after `uv pip install` in a project
+
+*Option B: UV global installation:*
+```json
+{
+  "command": "C:\\Users\\{username}\\.local\\bin\\python-alfresco-mcp-server",
+  "args": ["--transport", "stdio"]
+}
+```
+- Direct path to UV's global installation directory
+- Use when UV installed package globally (similar to pipx)
+
+**2. pipx (global tool installation):**
+```json
+{
+  "command": "python-alfresco-mcp-server",
+  "args": ["--transport", "stdio"]
+}
+```
+- Uses the **global command name** directly (no path needed)
+- pipx makes tools globally available in your PATH
+- Simplest configuration
+
+**3. pip (manual venv installation):**
+```json
+{
+  "command": "C:\\path\\to\\venv\\Scripts\\python-alfresco-mcp-server.exe",
+  "args": ["--transport", "stdio"]
+}
+```
+- Uses **direct path to executable** in your virtual environment
+- Path points to `Scripts/` directory in your venv
+- Replace `C:\\path\\to\\venv` with your actual venv location
+
+**🔐 Tool-by-Tool Permission System:**
+Claude Desktop will prompt you **individually for each tool** on first use. Since this MCP server has 15 tools, you may see up to 15 permission prompts if you use all features. For each tool, you can choose:
+- **"Allow once"** - Approve this single tool use only
+- **"Always allow"** - Approve all future uses of this specific tool automatically (recommended for regular use)
+
+This tool-by-tool security feature ensures you maintain granular control over which external tools can be executed.
 
 **Using the Tools:**
 
@@ -365,25 +455,60 @@ Python-Alfresco-MCP-Server was tested with Claude Desktop which is recommended a
 
 > 📖 **Setup Guide**: Complete MCP Inspector setup and connection instructions in [MCP Inspector Setup Guide](./docs/mcp_inspector_setup.md)
 
+**📥 Install MCP Inspector:**
+- **Prerequisites**: Requires **Node.js 18+** - Download from **[nodejs.org](https://nodejs.org/)**
+- **Install Command**: `npm install -g @modelcontextprotocol/inspector`
+- **Or run directly**: `npx @modelcontextprotocol/inspector` (no global install needed)
+- **Purpose**: Web-based tool for testing MCP servers and individual tools with custom parameters
+
 **Working Method (Recommended):**
 
-1. **Start MCP Server with HTTP transport:**
-```bash
-# With UV (recommended)
-uv run python-alfresco-mcp-server --transport http --port 8003
+**1. Start MCP Server with HTTP transport:**
 
-# Or traditional method
-python -m alfresco_mcp_server.fastmcp_server --transport http --port 8003
-```
+   ```bash
+   # With UV (recommended)
+   uv run python-alfresco-mcp-server --transport http --port 8003
 
-2. **Start MCP Inspector with config:**
-```bash
-npx @modelcontextprotocol/inspector --config mcp-inspector-http-config.json --server python-alfresco-mcp-server
-```
+   # With pipx (global)
+   python-alfresco-mcp-server --transport http --port 8003
 
-3. **Open browser with pre-filled token:**
+   # With pip (activate venv first if needed)
+   python-alfresco-mcp-server --transport http --port 8003
+   ```
+
+**2. Start MCP Inspector with config:**
+
+   **If using UV/source installation (config file available):**
+   ```bash
+   # From project directory where mcp-inspector-http-config.json exists
+   npx @modelcontextprotocol/inspector --config mcp-inspector-http-config.json --server python-alfresco-mcp-server
+   ```
+
+   **If using pipx installation:**
+
+   Copy one of the sample config files for your preferred transport:
+   - **stdio transport**: [`mcp-inspector-stdio-pipx-config.json`](./mcp-inspector-stdio-pipx-config.json)
+   - **http transport**: [`mcp-inspector-http-pipx-config.json`](./mcp-inspector-http-pipx-config.json)
+
+   ```bash
+   # Start with stdio transport
+   npx @modelcontextprotocol/inspector --config mcp-inspector-stdio-pipx-config.json --server python-alfresco-mcp-server
+
+   # Start with http transport  
+   npx @modelcontextprotocol/inspector --config mcp-inspector-http-pipx-config.json --server python-alfresco-mcp-server
+   ```
+
+   **If using pip installation:**
+
+   Copy one of the pipx sample files above and modify the `"command"` field to point to your venv executable:
+   - Change `"python-alfresco-mcp-server"` to `"C:\\path\\to\\venv\\Scripts\\python-alfresco-mcp-server.exe"` (Windows)
+   - Or `"/path/to/venv/bin/python-alfresco-mcp-server"` (Linux/macOS)
+
+**3. Open browser with pre-filled token:**
+
    - Use the URL provided in the output (includes authentication token)
    - Example: `http://localhost:6274/?MCP_PROXY_AUTH_TOKEN=<token>`
+   - This step applies to **all installation methods** (UV, pipx, pip)
 
 This approach avoids proxy connection errors and provides direct authentication.
 
