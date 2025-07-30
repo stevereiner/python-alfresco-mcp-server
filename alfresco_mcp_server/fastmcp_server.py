@@ -211,7 +211,7 @@ def main():
     """Main entry point for the FastMCP 2.0 Alfresco server."""
     import argparse
     
-    parser = argparse.ArgumentParser(description="MCP Server for Alfresco 2.0")
+    parser = argparse.ArgumentParser(description="MCP Server for Alfresco 1.1.0")
     parser.add_argument(
         "--transport",
         choices=["stdio", "http", "sse"],
