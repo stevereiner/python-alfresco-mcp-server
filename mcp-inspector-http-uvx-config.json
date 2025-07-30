@@ -1,0 +1,21 @@
+{
+  "mcpServers": {
+    "python-alfresco-mcp-server": {
+      "command": "uvx",
+      "args": [
+        "python-alfresco-mcp-server",
+        "--transport", 
+        "http",
+        "--host",
+        "127.0.0.1",
+        "--port",
+        "8003"
+      ],
+      "env": {
+        "ALFRESCO_URL": "http://localhost:8080",
+        "ALFRESCO_USERNAME": "admin",
+        "ALFRESCO_PASSWORD": "admin"
+      }
+    }
+  }
+} 

@@ -1,0 +1,21 @@
+{
+  "mcpServers": {
+    "python-alfresco-mcp-server": {
+      "command": "uv",
+      "args": [
+        "run", 
+        "python-alfresco-mcp-server",
+        "--transport", 
+        "stdio"
+      ],
+      "cwd": "C:\\path\\to\\python-alfresco-mcp-server",
+      "env": {
+        "ALFRESCO_URL": "http://localhost:8080",
+        "ALFRESCO_USERNAME": "admin",
+        "ALFRESCO_PASSWORD": "admin",
+        "PYTHONIOENCODING": "utf-8",
+        "PYTHONLEGACYWINDOWSSTDIO": "1"
+      }
+    }
+  }
+} 
