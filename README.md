@@ -27,7 +27,7 @@ config for various MCP clients (Claude Desktop, MCP Inspector, references to con
 ## 📚 Complete Documentation
 
 ### **Documentation & Examples**
-- **📚 Complete Documentation**: 9 guides covering setup to deployment
+- **📚 Complete Documentation**: 10 guides covering setup to deployment
 - **💡 Examples**: 6 practical examples from quick start to implementation patterns  
 - **🔧 Configuration Management**: Environment variables, .env files, and command-line configuration
 - **🏗️ Setup instruction for use with MCP client
@@ -42,6 +42,7 @@ config for various MCP clients (Claude Desktop, MCP Inspector, references to con
 
 - **[📚 Documentation Hub](./docs/README.md)** - Complete navigation and overview
 - **[🚀 Quick Start Guide](./docs/quick_start_guide.md)** - 5-minute setup and first operations
+- **[📦 Installation with pip and pipx](./docs/install_with_pip_pipx.md)** - Traditional Python package installation methods
 - **[🤖 Claude Desktop Setup](./docs/claude_desktop_setup.md)** - Complete Claude Desktop configuration for users and developers
 - **[🔧 Client Configurations](./docs/client_configurations.md)** - Setup guide for Cursor, Claude Code, and other MCP clients
 - **[🔍 MCP Inspector Setup](./docs/mcp_inspector_setup.md)** - Development and testing with MCP Inspector
@@ -84,7 +85,8 @@ Works with Alfresco Community (tested) and Enterprise editions
 
 - Python 3.10+
 - Alfresco Content Services (Community or Enterprise)
-- python-alfresco-api >= 1.1.1
+
+> **Note**: The `python-alfresco-api >= 1.1.1` dependency is automatically installed with `python-alfresco-mcp-server`
 
 ## 🛠️ Installation
 
@@ -94,107 +96,81 @@ You need to have Python 3.10+ installed for the sections below. If not, download
 
 [Python.org Downloads](https://www.python.org/downloads/)
 
+### UV/UVX Setup (Recommended)
 
-### Option A: Install from PyPI (Recommended for Users)
-
-The fastest way to get started - install directly from PyPI:
-
-```bash
-# First install pipx if you don't have it (one-time setup)
-pip install pipx
-
-# Option 1: pipx (Recommended) - installs in isolated environment + makes globally available
-pipx install python-alfresco-mcp-server
-
-# Option 2: pip - traditional package manager (with venv recommended)
-python -m venv venv
-source venv/bin/activate     # Linux/macOS
-# venv\Scripts\activate      # Windows
-pip install python-alfresco-mcp-server
-
-# Option 3: UV (fastest) - Rust-based package manager (see next section for installing uv)
-uv pip install python-alfresco-mcp-server
-
-# Run immediately to test if can get help
-python-alfresco-mcp-server --help
-```
-
-**Why pipx?** pipx automatically creates isolated environments for each tool while making commands globally available - eliminates dependency conflicts while providing system-wide access.
-
-**Note**: You still need to configure your MCP client (Claude Desktop, MCP Inspector, etc.) with the appropriate configuration. See the [MCP Client Setup and Use](#mcp-client-setup-and-use) section below for client configuration details.
-
-### Option B: Install from Source (Recommended for Development)
-
-For development or access to latest features:
-
-### 1. Install UV (Recommended)
-
-UV is a modern Python package manager written in **Rust** that handles everything automatically. **Much faster than pip** due to its compiled nature and optimized dependency resolution. Choose your installation method:
+**UV** is a modern Python package manager written in **Rust** that provides both `uv` (package manager) and `uvx` (tool runner). **Much faster than pip** due to its compiled nature and optimized dependency resolution.
 
 ```bash
-# Method 1: Official installer (recommended)
+# Install UV (provides both uv and uvx commands)
 # Windows
 powershell -c "irm https://astral.sh/uv/install.ps1 | iex"
 
 # macOS/Linux  
 curl -LsSf https://astral.sh/uv/install.sh | sh
 
-# Method 2: pip (if you prefer)
+# Or via pip if you prefer
 pip install uv
 
-# Verify installation
+# Verify installation (both commands should work)
 uv --version
+uvx --version
 ```
 
 **UV Reference Links:**
 - **[UV Installation Guide](https://docs.astral.sh/uv/getting-started/installation/)** - Official installation instructions and platform-specific options
 - **[UV Documentation](https://docs.astral.sh/uv/)** - Complete UV documentation, guides, and advanced usage
 
-### 2. Get the Code
+### Option A: UVX - Modern Tool Runner (Recommended for Users)
+
+**UVX** is UV's tool runner - similar to pipx but faster and more modern. Automatically handles isolation and global availability:
 
 ```bash
-# Clone the repository
-git clone https://github.com/stevereiner/python-alfresco-mcp-server.git
-cd python-alfresco-mcp-server
+# Install python-alfresco-mcp-server with uvx (after UV/UVX setup above)
+uvx python-alfresco-mcp-server --help
+
+# This tests that installation worked - UVX automatically installs packages on first use!
 ```
 
-### 3. Install Dependencies (Choose Method)
+**Why UVX?** UVX combines the benefits of pipx (isolated environments + global availability) with UV's Rust-based speed and modern dependency resolution. It automatically installs packages on first use.
 
-**Option A: UV (Recommended - Automatic everything + much faster):**
+### Option B: UV - Modern Package Manager (Recommended for Development)
+
+**UV** is a modern Python package manager written in **Rust** that handles everything automatically. **Much faster than pip** due to its compiled nature and optimized dependency resolution.
 
 ```bash
-# UV handles venv creation and dependency installation automatically
-# Rust-based performance makes this much faster than pip
-uv run python-alfresco-mcp-server --help
+# Install and run from PyPI (fastest for users)
+uv tool install python-alfresco-mcp-server
+uv tool run python-alfresco-mcp-server --help  # Tests that installation worked
 
-# Or install dependencies explicitly:
+# Or install from source (for development)
+git clone https://github.com/stevereiner/python-alfresco-mcp-server.git
+cd python-alfresco-mcp-server
+uv run python-alfresco-mcp-server --help  # Tests that installation worked
+```
+
+### Option C: Traditional Methods (pip and pipx)
+
+For traditional Python package management approaches, see the **[Installation with pip and pipx](./docs/install_with_pip_pipx.md)**.
+
+**Note**: You still need to configure your MCP client (Claude Desktop, MCP Inspector, etc.) with the appropriate configuration. See the [MCP Client Setup and Use](#mcp-client-setup-and-use) section below for client configuration details.
+
+### Source Installation (For Development)
+
+For development or access to latest features:
+
+```bash
+# 1. Clone the repository
+git clone https://github.com/stevereiner/python-alfresco-mcp-server.git
+cd python-alfresco-mcp-server
+
+# 2. UV handles everything automatically - run immediately!
+uv run python-alfresco-mcp-server --help  # Tests that installation worked
+
+# Or install dependencies explicitly for development:
 uv sync                    # Basic dependencies
 uv sync --extra dev        # With development tools  
 uv sync --extra test       # With testing tools
 uv sync --extra all        # Everything
-```
-
-**Option B: Traditional pip (Manual venv management):**
-
-```bash
-# Create and activate virtual environment  
-python -m venv venv          # Traditional Python creates 'venv'
-source venv/bin/activate     # Linux/macOS
-# venv\Scripts\activate      # Windows
-
-# Note: UV creates '.venv' by default (not 'venv')
-
-# Install MCP server
-pip install -e .
-
-# Or with development dependencies
-pip install -e .[dev]
-
-# Or with testing dependencies
-pip install -e .[test]
-
-# Or install everything
-pip install -e .[all]
 ```
 
 ### 4. Configure Alfresco Connection
@@ -275,7 +251,20 @@ docker-compose -f community-compose.yaml up
 
 ### MCP Server Startup
 
-**With UV (Recommended - Automatic venv and dependency management):**
+**With UVX (Recommended - Automatic isolation and global availability):**
+
+```bash
+# Run MCP server with STDIO transport (default)
+uvx python-alfresco-mcp-server
+
+# HTTP transport for web services (matches MCP Inspector)
+uvx python-alfresco-mcp-server --transport http --host 127.0.0.1 --port 8003
+
+# SSE transport for real-time streaming  
+uvx python-alfresco-mcp-server --transport sse --host 127.0.0.1 --port 8001
+```
+
+**With UV (For development or source installations):**
 
 ```bash
 # Run MCP server with STDIO transport (default)
@@ -288,35 +277,9 @@ uv run python-alfresco-mcp-server --transport http --host 127.0.0.1 --port 8003
 uv run python-alfresco-mcp-server --transport sse --host 127.0.0.1 --port 8001
 ```
 
-**With pipx (Global installation - no venv needed):**
+**With Traditional Methods (pip/pipx):**
 
-```bash
-# Run MCP server with STDIO transport (default)
-python-alfresco-mcp-server
-
-# HTTP transport for web services (matches MCP Inspector)
-python-alfresco-mcp-server --transport http --host 127.0.0.1 --port 8003
-
-# SSE transport for real-time streaming  
-python-alfresco-mcp-server --transport sse --host 127.0.0.1 --port 8001
-```
-
-**With pip (Activate venv first if installed in one):**
-
-```bash
-# Activate virtual environment first (if used during installation)
-source venv/bin/activate     # Linux/macOS
-# venv\Scripts\activate      # Windows
-
-# Run MCP server with STDIO transport (default)
-python-alfresco-mcp-server
-
-# HTTP transport for web services (matches MCP Inspector)
-python-alfresco-mcp-server --transport http --host 127.0.0.1 --port 8003
-
-# SSE transport for real-time streaming  
-python-alfresco-mcp-server --transport sse --host 127.0.0.1 --port 8001
-```
+See the **[Installation with pip and pipx](./docs/install_with_pip_pipx.md)** for pip and pipx usage instructions.
 
 ### MCP Client Setup and Use
 
@@ -333,21 +296,24 @@ Python-Alfresco-MCP-Server was tested with Claude Desktop which is recommended a
 (Claude Opus 4 only in Pro)
 
 
-**For Users (PyPI pipx installation):**
-- Install with `pipx install python-alfresco-mcp-server`
-- Use configuration files: `claude-desktop-config-user-windows.json` or `claude-desktop-config-user-macos.json`
-
-**For Developers (using uv and source installation):**
-- Clone repository and use uv
-- Use configuration files: `claude-desktop-config-developer-windows.json` or `claude-desktop-config-developer-macos.json`
-
-**🔧 Claude Desktop Path Configuration by Installation Method:**
+**🔧 Claude Desktop Configuration by Installation Method:**
 
 The Claude Desktop configuration differs based on how you installed the MCP server:
 
-**1. UV (both PyPI and source installations):**
+**1. UVX (Recommended - Modern tool runner):**
+```json
+{
+  "command": "uvx",
+  "args": ["python-alfresco-mcp-server", "--transport", "stdio"]
+}
+```
+- **Sample Config Files:**
+  - Windows: [`claude-desktop-config-uvx-windows.json`](./claude-desktop-config-uvx-windows.json)
+  - macOS: [`claude-desktop-config-uvx-macos.json`](./claude-desktop-config-uvx-macos.json)
+- UVX automatically handles isolation and global availability
+- Fastest and most modern approach
 
-*Option A: UV with project directory (source install or after `uv pip install`):*
+**2. UV (Development or source installations):**
 ```json
 {
   "command": "uv",
@@ -355,41 +321,18 @@ The Claude Desktop configuration differs based on how you installed the MCP serv
   "cwd": "C:\\path\\to\\python-alfresco-mcp-server"
 }
 ```
+- **Sample Config Files:**
+  - Windows: [`claude-desktop-config-uv-windows.json`](./claude-desktop-config-uv-windows.json)
+  - macOS: [`claude-desktop-config-uv-macos.json`](./claude-desktop-config-uv-macos.json)
 - Uses `uv run` with `cwd` pointing to your **project directory**
 - UV automatically finds and uses the `.venv` from the project directory
-- Works for both source installations and after `uv pip install` in a project
+- Works for both source installations and after `uv tool install`
 
-*Option B: UV global installation:*
-```json
-{
-  "command": "C:\\Users\\{username}\\.local\\bin\\python-alfresco-mcp-server",
-  "args": ["--transport", "stdio"]
-}
-```
-- Direct path to UV's global installation directory
-- Use when UV installed package globally (similar to pipx)
+**3. Traditional Methods (pipx/pip):**
 
-**2. pipx (global tool installation):**
-```json
-{
-  "command": "python-alfresco-mcp-server",
-  "args": ["--transport", "stdio"]
-}
-```
-- Uses the **global command name** directly (no path needed)
-- pipx makes tools globally available in your PATH
-- Simplest configuration
-
-**3. pip (manual venv installation):**
-```json
-{
-  "command": "C:\\path\\to\\venv\\Scripts\\python-alfresco-mcp-server.exe",
-  "args": ["--transport", "stdio"]
-}
-```
-- Uses **direct path to executable** in your virtual environment
-- Path points to `Scripts/` directory in your venv
-- Replace `C:\\path\\to\\venv` with your actual venv location
+For traditional installation methods, see the **[Installation with pip and pipx](./docs/install_with_pip_pipx.md)** which covers:
+- **pipx**: [`claude-desktop-config-pipx-windows.json`](./claude-desktop-config-pipx-windows.json) / [`claude-desktop-config-pipx-macos.json`](./claude-desktop-config-pipx-macos.json)
+- **pip**: Manual venv path configuration
 
 **🔐 Tool-by-Tool Permission System:**
 Claude Desktop will prompt you **individually for each tool** on first use. Since this MCP server has 15 tools, you may see up to 15 permission prompts if you use all features. For each tool, you can choose:
@@ -397,6 +340,8 @@ Claude Desktop will prompt you **individually for each tool** on first use. Sinc
 - **"Always allow"** - Approve all future uses of this specific tool automatically (recommended for regular use)
 
 This tool-by-tool security feature ensures you maintain granular control over which external tools can be executed.
+
+> **🛡️ Virus Scanner Note**: If you have virus checkers like Norton 360, don't worry if you get a "checking" message once for pip, pipx, uv, uvx, or python-alfresco-mcp-server.exe - this is normal security scanning behavior.
 
 **Using the Tools:**
 
@@ -466,49 +411,42 @@ This tool-by-tool security feature ensures you maintain granular control over wh
 **1. Start MCP Server with HTTP transport:**
 
    ```bash
-   # With UV (recommended)
+   # With UVX (recommended)
+   uvx python-alfresco-mcp-server --transport http --port 8003
+
+   # With UV (development)
    uv run python-alfresco-mcp-server --transport http --port 8003
 
-   # With pipx (global)
-   python-alfresco-mcp-server --transport http --port 8003
-
-   # With pip (activate venv first if needed)
-   python-alfresco-mcp-server --transport http --port 8003
+   # Traditional methods - see Traditional Installation Guide
    ```
 
 **2. Start MCP Inspector with config:**
 
-   **If using UV/source installation (config file available):**
-   ```bash
-   # From project directory where mcp-inspector-http-config.json exists
-   npx @modelcontextprotocol/inspector --config mcp-inspector-http-config.json --server python-alfresco-mcp-server
-   ```
-
-   **If using pipx installation:**
-
-   Copy one of the sample config files for your preferred transport:
-   - **stdio transport**: [`mcp-inspector-stdio-pipx-config.json`](./mcp-inspector-stdio-pipx-config.json)
-   - **http transport**: [`mcp-inspector-http-pipx-config.json`](./mcp-inspector-http-pipx-config.json)
-
+   **UVX Installation (Recommended):**
    ```bash
    # Start with stdio transport
-   npx @modelcontextprotocol/inspector --config mcp-inspector-stdio-pipx-config.json --server python-alfresco-mcp-server
+   npx @modelcontextprotocol/inspector --config mcp-inspector-stdio-uvx-config.json --server python-alfresco-mcp-server
 
    # Start with http transport  
-   npx @modelcontextprotocol/inspector --config mcp-inspector-http-pipx-config.json --server python-alfresco-mcp-server
+   npx @modelcontextprotocol/inspector --config mcp-inspector-http-uvx-config.json --server python-alfresco-mcp-server
    ```
 
-   **If using pip installation:**
+   **UV Installation (Development):**
+   ```bash
+   # From project directory where config files exist
+   npx @modelcontextprotocol/inspector --config mcp-inspector-stdio-uv-config.json --server python-alfresco-mcp-server  # stdio transport
+   npx @modelcontextprotocol/inspector --config mcp-inspector-http-uv-config.json --server python-alfresco-mcp-server   # http transport
+   ```
 
-   Copy one of the pipx sample files above and modify the `"command"` field to point to your venv executable:
-   - Change `"python-alfresco-mcp-server"` to `"C:\\path\\to\\venv\\Scripts\\python-alfresco-mcp-server.exe"` (Windows)
-   - Or `"/path/to/venv/bin/python-alfresco-mcp-server"` (Linux/macOS)
+   **Traditional Methods (pipx/pip):**
+
+   See the **[Installation with pip and pipx](./docs/install_with_pip_pipx.md)** for pipx and pip configuration options.
 
 **3. Open browser with pre-filled token:**
 
    - Use the URL provided in the output (includes authentication token)
    - Example: `http://localhost:6274/?MCP_PROXY_AUTH_TOKEN=<token>`
-   - This step applies to **all installation methods** (UV, pipx, pip)
+   - This step applies to **all installation methods** (uv, uvx, pip, pipx)
 
 This approach avoids proxy connection errors and provides direct authentication.
 
@@ -624,7 +562,7 @@ The Search and Analyze Prompt provides:
 - **143 Total Tests**: **100% passed** - Coverage of all functionality
 - **122 Unit Tests**: **100% passed** - Core functionality validated with mocking (FastMCP 2.0, tools, coverage)
 - **21 Integration Tests**: **100% passed** - Live server testing (search, upload, download, document lifecycle)
-- **Integration Tests**: Automated end-to-end testing covering all 14 manual scenarios from prompts-for-claude.md
+- **Integration Tests**: Automated end-to-end testing covering all core document lifecycle scenarios
 - **Performance Validated**: Search <1s, concurrent operations, resource access
 
 ### Coverage Report (Post-Cleanup)
@@ -657,11 +595,10 @@ The project includes **4 levels of testing**:
 
 1. **📋 Unit Tests** (122 tests) - Fast, mocked, isolated component testing
 2. **🔗 Integration Tests** (21 tests) - Live Alfresco server testing  
-3. **📝 Comprehensive Tests** - Automated prompts-for-claude.md scenarios
+3. **📝 Comprehensive Tests** - Automated core document lifecycle scenarios
 4. **📊 Coverage Tests** - Edge cases and error path coverage
 
-**New Integration Tests:**
-- **Automated Manual Scenarios**: All manual test scenarios from `prompts-for-claude.md` now available as automated tests
+
 
 ## 🧪 Development
 
@@ -671,16 +608,21 @@ The project includes **4 levels of testing**:
 git clone <repository>
 cd python-alfresco-mcp-server
 
-# Create virtual environment
-python -m venv venv
-source venv/bin/activate  # or venv\Scripts\activate on Windows
+# UV handles everything automatically - no manual venv setup needed!
+uv sync --extra dev        # Install with development tools
+uv sync --extra test       # With testing tools
+uv sync --extra all        # Everything
 
-# Install development dependencies
-pip install -e .[dev]
+# Run immediately to test that installation worked
+uv run python-alfresco-mcp-server --help
 
-# Install python-alfresco-api (local development)
-pip install -e ../python-alfresco-api
+# Install python-alfresco-api for local development (if needed)
+uv add --editable ../python-alfresco-api
 ```
+
+**Traditional Development Setup:**
+
+See the **[Installation with pip and pipx](./docs/install_with_pip_pipx.md)** for pip-based development setup.
 
 ## 💡 Examples
 
