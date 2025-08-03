@@ -1,7 +1,7 @@
 # Python Alfresco MCP Server v1.1 🚀
 
 [![PyPI version](https://img.shields.io/pypi/v/python-alfresco-mcp-server)](https://pypi.org/project/python-alfresco-mcp-server/)
-[![PyPI downloads](https://pepy.tech/badge/python-alfresco-mcp-server/month)](https://pepy.tech/project/python-alfresco-mcp-server)
+[![PyPI downloads](https://pepy.tech/badge/python-alfresco-mcp-server)](https://pepy.tech/project/python-alfresco-mcp-server)
 [![Python Version](https://img.shields.io/badge/python-3.10%2B-blue)](https://pypi.org/project/python-alfresco-mcp-server/)
 [![License](https://img.shields.io/github/license/stevereiner/python-alfresco-mcp-server)](https://github.com/stevereiner/python-alfresco-mcp-server/blob/main/LICENSE)
 
