@@ -35,7 +35,7 @@ exclude = [
 
 [project]
 name = "python-alfresco-mcp-server"
-version = "1.2.0"
+version = "1.2.1"
 description = "FastMCP 3 server for Alfresco Content Services integration"
 authors = [{name = "Steve Reiner", email = "example@example.com"}]
 license = "Apache-2.0"
@@ -63,7 +63,7 @@ dependencies = [
     "fastmcp>=3.4.5,<4",
     
     # Alfresco integration
-    "python-alfresco-api>=1.2.1",
+    "python-alfresco-api>=1.2.2",
     
     # Configuration and utilities
     "pydantic>=2.0.0",

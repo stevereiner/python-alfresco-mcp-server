@@ -33,6 +33,12 @@ class AlfrescoConfig(BaseModel):
         description="Alfresco password"
     )
 
+    ticket: Optional[str] = Field(
+        default_factory=lambda: os.getenv("ALFRESCO_TICKET"),
+        description="Pre-obtained Alfresco login ticket; with auth_method=ticket it is "
+                    "used as-is instead of being fetched from username/password"
+    )
+
     # OAuth2 (auth_method=oauth2) — Alfresco Identity Service / any OIDC IdP
     oauth2_client_id: Optional[str] = Field(
         default_factory=lambda: os.getenv("ALFRESCO_OAUTH2_CLIENT_ID"),

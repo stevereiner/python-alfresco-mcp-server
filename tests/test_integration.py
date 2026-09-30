@@ -53,7 +53,8 @@ class TestSearchIntegration:
         """Test search for Shared folder (should always exist)."""
         result = await fastmcp_client.call_tool("search_content", {
             "query": "Shared",
-            "max_results": 10
+            "max_results": 10,
+            "node_type": "cm:folder"  # Shared is a folder; search_content defaults to cm:content
         })
         
         assert result.content[0].text is not None

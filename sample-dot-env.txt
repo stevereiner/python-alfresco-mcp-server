@@ -8,12 +8,17 @@ ALFRESCO_URL=http://localhost:8080
 # === Authentication ===
 # ALFRESCO_AUTH_METHOD: basic | ticket | oauth2   (default: basic)
 #   basic  = HTTP Basic (username/password below)
-#   ticket = Alfresco login ticket (username/password below; a ticket is fetched and used
-#            as Authorization: Basic base64(ticket) — password isn't sent on every request)
+#   ticket = Alfresco login ticket, sent as Authorization: Basic base64(ticket).
+#            Either set ALFRESCO_TICKET to a ticket you already have (no username or
+#            password needed at all), or leave it empty and a ticket is fetched from the
+#            username/password below so the password isn't sent on every request.
 #   oauth2 = OIDC Bearer token via Alfresco Identity Service / Keycloak (see OAuth2 block)
 ALFRESCO_AUTH_METHOD=basic
 ALFRESCO_USERNAME=admin
 ALFRESCO_PASSWORD=admin
+# A pre-obtained login ticket (only used when ALFRESCO_AUTH_METHOD=ticket). Set this and
+# username/password are ignored; it is never re-fetched, so it stops working when it expires.
+#ALFRESCO_TICKET=TICKET_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
 # === OPTIONAL: OAuth2 (only when ALFRESCO_AUTH_METHOD=oauth2) ===
 # Requires Alfresco's identity-service subsystem configured against an OIDC IdP (Keycloak).

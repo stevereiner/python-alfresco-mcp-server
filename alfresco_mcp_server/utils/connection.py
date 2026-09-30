@@ -20,6 +20,9 @@ def get_alfresco_config() -> dict:
         'auth_method': os.getenv('ALFRESCO_AUTH_METHOD', 'basic').lower(),  # basic | ticket | oauth2
         'username': os.getenv('ALFRESCO_USERNAME', 'admin'),
         'password': os.getenv('ALFRESCO_PASSWORD', 'admin'),
+        # A login ticket obtained elsewhere. With auth_method=ticket this replaces
+        # username/password entirely instead of being fetched from them.
+        'ticket': os.getenv('ALFRESCO_TICKET', ''),
         'verify_ssl': os.getenv('ALFRESCO_VERIFY_SSL', 'false').lower() == 'true',
         'timeout': int(os.getenv('ALFRESCO_TIMEOUT', '30')),
         'oauth2': {
@@ -38,14 +41,23 @@ def _build_auth_util(config: dict):
     """Build a python-alfresco-api auth util for the configured auth_method.
 
     Returns None for basic auth (ClientFactory builds its own from username/password).
-    - ticket: TicketAuthUtil self-fetches an Alfresco login ticket (Authorization: Basic base64(ticket)).
+    - ticket: either a caller-supplied login ticket (ALFRESCO_TICKET) used as-is, or one
+      TicketAuthUtil self-fetches from username/password. Either way the wire format is
+      Authorization: Basic base64(ticket).
     - oauth2: OAuth2AuthUtil (client_credentials/refresh, or a pre-obtained access_token → Bearer),
       e.g. against Alfresco Identity Service / Keycloak.
     """
     method = config.get('auth_method', 'basic')
     if method == 'ticket':
         from python_alfresco_api.auth_util import TicketAuthUtil
-        logger.info(">> Using Alfresco ticket authentication")
+        ticket = config.get('ticket')
+        if ticket:
+            logger.info(">> Using Alfresco ticket authentication (caller-supplied ticket)")
+            return TicketAuthUtil(
+                base_url=config['alfresco_url'], ticket=ticket,
+                verify_ssl=config['verify_ssl'], timeout=config['timeout'],
+            )
+        logger.info(">> Using Alfresco ticket authentication (acquired from username/password)")
         return TicketAuthUtil(
             config['username'], config['password'],
             base_url=config['alfresco_url'],

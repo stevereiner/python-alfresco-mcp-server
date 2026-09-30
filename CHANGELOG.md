@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.2.1] - 2026-09-29
+
+### Added
+- **`ALFRESCO_TICKET`**: with `ALFRESCO_AUTH_METHOD=ticket`, a login ticket you already hold is used as-is instead of being fetched from a username and password — so the server can run with no Alfresco password configured at all. Leave it unset and ticket auth behaves as before (acquired from `ALFRESCO_USERNAME` / `ALFRESCO_PASSWORD`). A supplied ticket is never renewed, so it stops working when it expires.
+
+### Changed
+- Requires **python-alfresco-api >= 1.2.2** for the ticket pass-through above.
+
+### Fixed
+- **Integration test `test_search_shared_folder`**: now passes `node_type="cm:folder"`. `search_content` searches documents (`cm:content`) by default, so the search never matched the Shared folder and the test failed.
+
 ## [1.2.0] - 2026-08-05
 
 ### Added
