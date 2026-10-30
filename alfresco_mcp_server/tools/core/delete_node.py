@@ -65,7 +65,7 @@ async def delete_node_impl(
         filename = getattr(node_info, 'name', f"document_{clean_node_id}")
         
         # Use the working high-level API pattern from test script
-        core_client.nodes.delete(clean_node_id)
+        core_client.nodes.delete(clean_node_id, permanent=permanent)
         
         status = "permanently deleted" if permanent else "moved to trash"
         logger.info(f"✅ Node {status}: {filename}")

@@ -14,6 +14,7 @@ from ...utils.connection import get_core_client
 from ...config import config
 from ...utils.file_type_analysis import analyze_content_type
 from ...utils.json_utils import safe_format_output
+from ...utils.file_security import safe_file_component, safe_node_id
 
 logger = logging.getLogger(__name__)
 
@@ -50,11 +51,8 @@ async def download_document_impl(
             await ctx.info("Getting node information...")
             await ctx.report_progress(0.3)
         
-        # Clean the node ID (remove any URL encoding or extra characters)
-        clean_node_id = node_id.strip()
-        if clean_node_id.startswith('alfresco://'):
-            # Extract node ID from URI format
-            clean_node_id = clean_node_id.split('/')[-1]
+        # Reject request-path injection before building any URL.
+        clean_node_id = safe_node_id(node_id)
         
         # Get node information first to validate it exists and get filename
         node_response = core_client.nodes.get(node_id=clean_node_id)
@@ -71,17 +69,8 @@ async def download_document_impl(
         if not is_file:
             return safe_format_output(f"❌ Node {clean_node_id} is not a file (it's a {node_type})")
         
-        # Clean filename - strip whitespace and remove invalid characters for file paths
-        filename = filename.strip()
-        # Remove newlines and other control characters
-        filename = filename.replace('\n', '').replace('\r', '').replace('\t', '')
-        # Remove or replace invalid Windows filename characters
-        invalid_chars = '<>:"|?*'
-        for char in invalid_chars:
-            filename = filename.replace(char, '_')
-        # Ensure filename is not empty
-        if not filename or filename == '_':
-            filename = f"document_{clean_node_id}"
+        # Alfresco metadata is untrusted and must never select a local path.
+        filename = safe_file_component(filename or f"document_{clean_node_id}")
         
         if ctx:
             await ctx.info(f"Downloading content for: {filename}")
@@ -142,7 +131,7 @@ async def download_document_impl(
             
             # Create smart filename with content type organization
             if content_type_info['category'] != 'other':
-                category_dir = downloads_dir / content_type_info['category']
+                category_dir = downloads_dir / safe_file_component(content_type_info['category'])
                 category_dir.mkdir(exist_ok=True)
                 downloads_dir = category_dir
             
@@ -153,6 +142,7 @@ async def download_document_impl(
             else:
                 safe_filename = f"{filename}_{clean_node_id}"
             
+            safe_filename = safe_file_component(safe_filename)
             file_path = downloads_dir / safe_filename
             
             # Write file to disk
@@ -201,15 +191,20 @@ async def download_document_impl(
             
             return safe_format_output(result)
         else:
-            # Testing/debugging mode: Return base64 content
+            # An MCP text response cannot safely carry arbitrarily large binaries.
+            # Return the complete payload for small files; never pretend that an
+            # intentionally truncated Base64 string is the downloaded document.
+            if file_size > 1024 * 1024:
+                return safe_format_output(
+                    "ERROR: Base64 response is limited to 1 MiB; set save_to_disk=true."
+                )
             base64_content = base64.b64encode(content_bytes).decode('ascii')
             
             result = f"**Downloaded: {filename}**\n\n"
             result += f"- **Node ID**: {clean_node_id}\n"
             result += f"- **Size**: {file_size} bytes\n"
             result += f"- **MIME Type**: {mime_type}\n\n"
-            result += f"**Base64 Content**:\n```\n{base64_content[:200]}{'...' if len(base64_content) > 200 else ''}\n```\n"
-            result += f"\n*Note: Content is base64 encoded. Full content length: {len(base64_content)} characters*"
+            result += f"**Base64 Content**:\n```\n{base64_content}\n```\n"
             
             return safe_format_output(result)
         
