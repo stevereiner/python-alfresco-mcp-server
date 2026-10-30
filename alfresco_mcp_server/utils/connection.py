@@ -2,6 +2,8 @@
 Connection utilities for Alfresco MCP Server.
 Handles client creation and connection management.
 """
+import contextvars
+import hashlib
 import logging
 import os
 from typing import Optional
@@ -9,9 +11,75 @@ from typing import Optional
 
 logger = logging.getLogger(__name__)
 
-# Global connection cache
+# Shared service-account connection (used only when caller passthrough is off).
 _master_client = None
 _client_factory = None
+
+# Request/task-local connection. Never cache an authenticated user's client
+# globally or use a privileged service-account client as a fallback.
+_caller_session = contextvars.ContextVar("alfresco_caller_session", default=None)
+
+
+def _caller_passthrough_enabled() -> bool:
+    return os.getenv("ALFRESCO_AUTH_USE_CALLER_TOKEN", "false").lower() == "true"
+
+
+def _get_caller_bearer() -> str:
+    """Read the *validated* FastMCP access token of the current MCP request.
+
+    The caller must have passed MCP JWT authentication first. We do not
+    retrieve an unverified Authorization header from an arbitrary request.
+    """
+    if os.getenv("MCP_TRANSPORT_AUTH", "false").lower() != "true":
+        raise PermissionError("Per-user bearer passthrough requires MCP_TRANSPORT_AUTH=true")
+    try:
+        from fastmcp.server.dependencies import get_access_token
+        verified = get_access_token()
+    except (ImportError, RuntimeError, LookupError):
+        verified = None
+    raw_token = getattr(verified, "token", None)
+    if not isinstance(raw_token, str) or not raw_token:
+        raise PermissionError("No validated user access token for this MCP request")
+    return raw_token
+
+
+def _ensure_caller_connection():
+    """Construct/isolate an Alfresco client per authenticated MCP identity."""
+    from python_alfresco_api import ClientFactory
+
+    config = get_alfresco_config()
+    if config["auth_method"] != "oauth2":
+        raise RuntimeError("Caller bearer passthrough requires ALFRESCO_AUTH_METHOD=oauth2")
+    bearer = _get_caller_bearer()
+    # Only a hash is retained for matching a session within the current task.
+    key = hashlib.sha256(bearer.encode("utf-8")).hexdigest()
+    cached = _caller_session.get()
+    if cached is not None and cached[0] == key:
+        return cached[2]
+
+    # Do not hand a caller's token to a utility with service-account client
+    # credentials or refresh tokens: on expiry it must fail, not escalate.
+    caller_config = dict(config)
+    caller_config["oauth2"] = dict(config["oauth2"])
+    caller_config["oauth2"].update({
+        "access_token": bearer,
+        "refresh_token": None,
+        "client_secret": None,
+        "token_endpoint": None,
+        "grant_type": "refresh_token",
+    })
+    auth_util = _build_auth_util(caller_config)
+    factory = ClientFactory(
+        base_url=config["alfresco_url"],
+        auth_util=auth_util,
+        verify_ssl=config["verify_ssl"],
+        timeout=config["timeout"],
+    )
+    master = factory.create_master_client()
+    master.core.ensure_httpx_client()
+    _caller_session.set((key, factory, master))
+    return master
+
 
 def get_alfresco_config() -> dict:
     """Get Alfresco configuration from environment variables."""
@@ -23,7 +91,7 @@ def get_alfresco_config() -> dict:
         # A login ticket obtained elsewhere. With auth_method=ticket this replaces
         # username/password entirely instead of being fetched from them.
         'ticket': os.getenv('ALFRESCO_TICKET', ''),
-        'verify_ssl': os.getenv('ALFRESCO_VERIFY_SSL', 'false').lower() == 'true',
+        'verify_ssl': os.getenv('ALFRESCO_VERIFY_SSL', 'true').lower() == 'true',
         'timeout': int(os.getenv('ALFRESCO_TIMEOUT', '30')),
         'oauth2': {
             'client_id': os.getenv('ALFRESCO_OAUTH2_CLIENT_ID'),
@@ -85,7 +153,10 @@ def _build_auth_util(config: dict):
 async def ensure_connection():
     """Ensure we have a working connection to Alfresco using python-alfresco-api."""
     global _master_client, _client_factory
-    
+
+    if _caller_passthrough_enabled():
+        return _ensure_caller_connection()
+
     if _master_client is None:
         try:
             # Import here to avoid circular imports
@@ -135,7 +206,10 @@ async def ensure_connection():
 
 
 def get_connection():
-    """Get the cached connection without async (for sync operations)."""
+    """Get the appropriate cached connection for the current identity."""
+    if _caller_passthrough_enabled():
+        session = _caller_session.get()
+        return session[2] if session else None
     return _master_client
 
 
@@ -156,6 +230,11 @@ async def get_core_client():
 async def get_client_factory():
     """Get the client factory for advanced operations."""
     await ensure_connection()
+    if _caller_passthrough_enabled():
+        session = _caller_session.get()
+        if session is None:
+            raise RuntimeError("No authenticated caller's Alfresco client")
+        return session[1]
     if not _client_factory:
         raise RuntimeError("Connection not initialized. Call ensure_connection() first.")
     return _client_factory
