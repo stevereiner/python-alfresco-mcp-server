@@ -53,6 +53,8 @@ def _build_transport_auth():
     (ALFRESCO_AUTH_METHOD / ALFRESCO_OAUTH2_*) — this one gates who may call the MCP server.
     """
     if os.getenv("MCP_TRANSPORT_AUTH", "false").strip().lower() not in ("1", "true", "yes", "on"):
+        if os.getenv("ALFRESCO_AUTH_USE_CALLER_TOKEN", "false").lower() == "true":
+            raise RuntimeError("Caller token passthrough requires MCP_TRANSPORT_AUTH=true")
         return None
     from fastmcp.server.auth.providers.jwt import JWTVerifier
     jwks_uri = os.getenv(
@@ -66,7 +68,18 @@ def _build_transport_auth():
     # IdP in production, set MCP_AUTH_ISSUER to enable strict issuer validation.
     issuer = os.getenv("MCP_AUTH_ISSUER") or None
     audience = os.getenv("MCP_AUTH_AUDIENCE") or None  # unset = don't validate aud
-    logger.info(f">> MCP transport auth ENABLED (jwks_uri={jwks_uri}, issuer={issuer}, audience={audience})")
+    if os.getenv("ALFRESCO_AUTH_USE_CALLER_TOKEN", "false").lower() == "true":
+        # Signature validation alone cannot establish that the JWT is intended
+        # for this server. Production token passthrough needs both checks.
+        if not issuer or not audience or not os.getenv("MCP_AUTH_JWKS_URI"):
+            raise RuntimeError(
+                "Caller token passthrough requires explicit MCP_AUTH_JWKS_URI, "
+                "MCP_AUTH_ISSUER and MCP_AUTH_AUDIENCE"
+            )
+    logger.info(
+        "MCP transport JWT verification enabled (issuer=%s, audience=%s)",
+        issuer or "unset", audience or "unset"
+    )
     return JWTVerifier(jwks_uri=jwks_uri, issuer=issuer, audience=audience)
 
 

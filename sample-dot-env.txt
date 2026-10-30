@@ -31,8 +31,17 @@ ALFRESCO_PASSWORD=admin
 #ALFRESCO_OAUTH2_ACCESS_TOKEN=
 #ALFRESCO_OAUTH2_REFRESH_TOKEN=
 
+# === OPTIONAL: Acosix Keycloak bearer token passthrough ===
+# Use only when the Acosix Repository subsystem accepts the SAME token/audience
+# validated for MCP. No service-account fallback is permitted in this mode.
+# Requires: ALFRESCO_AUTH_METHOD=oauth2, MCP_TRANSPORT_AUTH=true,
+# MCP_AUTH_JWKS_URI, MCP_AUTH_ISSUER, MCP_AUTH_AUDIENCE.
+#ALFRESCO_AUTH_USE_CALLER_TOKEN=false
+
 # === OPTIONAL: Connection Settings ===
-ALFRESCO_VERIFY_SSL=false
+ALFRESCO_VERIFY_SSL=true
+# Set to false only for an isolated local/test server with a self-signed cert.
+# Never disable verification for a remotely accessible production Keycloak/ACS.
 ALFRESCO_TIMEOUT=30
 
 # === OPTIONAL: Server Settings ===

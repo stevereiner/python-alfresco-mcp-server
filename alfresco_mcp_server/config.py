@@ -71,7 +71,7 @@ class AlfrescoConfig(BaseModel):
     
     # Connection settings
     verify_ssl: bool = Field(
-        default_factory=lambda: os.getenv("ALFRESCO_VERIFY_SSL", "false").lower() == "true",
+        default_factory=lambda: os.getenv("ALFRESCO_VERIFY_SSL", "true").lower() == "true",
         description="Verify SSL certificates"
     )
     
