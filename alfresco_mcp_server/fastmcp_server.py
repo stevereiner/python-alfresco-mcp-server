@@ -24,6 +24,14 @@ from .tools.core.checkout_document import checkout_document_impl
 from .tools.core.checkin_document import checkin_document_impl
 from .tools.core.cancel_checkout import cancel_checkout_impl
 
+# Runtime discovery is provider-driven; importing does not call Alfresco.
+from .tools.runtime_discovery import (
+    list_alfresco_operations_impl,
+    describe_alfresco_operation_impl,
+    invoke_alfresco_operation_impl,
+    refresh_alfresco_discovery_impl,
+)
+
 # Resource imports
 from .resources.repository_resources import (
     get_repository_info_impl
@@ -72,6 +80,52 @@ def _build_transport_auth():
 
 # Initialize MCP server (optionally with transport-level OAuth2/JWT bearer auth)
 mcp = FastMCP("MCP Server for Alfresco Content Services", auth=_build_transport_auth())
+
+# ================== RUNTIME ALFRESCO API DISCOVERY ==================
+
+@mcp.tool
+async def list_alfresco_operations(
+    query: str = "", source: str = "", refresh: bool = False
+) -> dict:
+    """List currently discovered Alfresco operations (read-only discovery)."""
+    return await list_alfresco_operations_impl(query, source, refresh)
+
+
+@mcp.tool
+async def describe_alfresco_operation(operation_id: str) -> dict:
+    """Inspect a discovered operation and its known parameter contract."""
+    return await describe_alfresco_operation_impl(operation_id)
+
+
+@mcp.tool
+async def invoke_alfresco_operation(
+    operation_id: str, arguments: dict | None = None
+) -> dict:
+    """Invoke an explicitly enabled, validated runtime-discovered operation."""
+    return await invoke_alfresco_operation_impl(operation_id, arguments or {})
+
+
+@mcp.tool
+async def refresh_alfresco_discovery() -> dict:
+    """Refresh the runtime catalog from configured Alfresco discovery providers."""
+    return await refresh_alfresco_discovery_impl()
+
+
+# An optional feature branch may contribute extra runtime tools. This
+# dependency stays one-way: the foundation works before extensions land.
+def _register_optional_runtime_tools():
+    from importlib import import_module
+
+    try:
+        extension = import_module("alfresco_mcp_server.tools.action_tools")
+    except ModuleNotFoundError as exc:
+        if exc.name != "alfresco_mcp_server.tools.action_tools":
+            raise
+    else:
+        extension.register_action_tools(mcp)
+
+
+_register_optional_runtime_tools()
 
 # ================== SEARCH TOOLS ==================
 
