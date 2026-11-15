@@ -243,6 +243,12 @@ async def search_and_analyze(query: str, analysis_type: str = "summary") -> str:
     """Generate comprehensive search and analysis prompts for Alfresco documents."""
     return await search_and_analyze_impl(query, analysis_type)
 
+# ================== DOCUMENT EXTENSIONS ==================
+
+from .document_tools import register_document_tools
+
+register_document_tools(mcp)
+
 # ================== MAIN ENTRY POINT ==================
 
 def main():
